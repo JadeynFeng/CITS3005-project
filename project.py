@@ -1,7 +1,6 @@
 from rdflib import Graph, Literal, Namespace, RDF, URIRef
 import json
 
-
 # Create a new RDF graph
 g = Graph()
 
@@ -101,11 +100,10 @@ g.bind("major", MAJOR)
 # Serialize the RDF graph to a file (e.g., in Turtle format)
 g.serialize("project.rdf", format="turtle")
 
-
-# QUERIES ==================================================
-
-
-# Query 1 gets all units with more than 6 outcomes  
+# QUERIES ===============================================================
+print("======================= QUERIES =======================")
+# Query 1 : Find all units with more than 6 outcomes  
+print("Query 1 : Find all units with more than 6 outcomes")
 q1 = """
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
@@ -120,44 +118,45 @@ q1 = """
     GROUP BY ?code
     HAVING (COUNT(?outcomes) > 6)
 """
-# print("# Query 1 \n")
-# for row in g.query(q1):
-#     print(f"{row.code}, {row.title}, {row.c}")
-
-
-# Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam.
-q2 = """
-    PREFIX terms: <http://uwabookofknowledge.org/terms/>
-    PREFIX unit: <http://uwabookofknowledge.org/unit/>
+for row in g.query(q1):
+    print(f"- {row.code}, {row.title}, {row.c}")
+print("-------------------------------------------------------")
     
-    SELECT ?code ?title ?p
-    WHERE {
-        ?unit rdf:type terms:Unit .
-        ?unit terms:code ?code .
-        ?unit terms:title ?title .
-        ?unit terms:level "3" .
-        ?unit terms:prerequisites_cnf ?p . 
+# Query 2 : Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam
+# print("Query 2 : Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam")
+# q2 = """
+#     PREFIX terms: <http://uwabookofknowledge.org/terms/>
+#     PREFIX unit: <http://uwabookofknowledge.org/unit/>
+    
+#     SELECT ?code ?title ?p
+#     WHERE {
+#         ?unit rdf:type terms:Unit .
+#         ?unit terms:code ?code .
+#         ?unit terms:title ?title .
+#         ?unit terms:level "3" .
+#         ?unit terms:prerequisites_cnf ?p . 
         
-        FILTER NOT EXISTS {
-            ?unit terms:assessment ?assessment .
-            FILTER(REGEX(?assessment, "exam", "i"))
-        }
+#         FILTER NOT EXISTS {
+#             ?unit terms:assessment ?assessment .
+#             FILTER(REGEX(?assessment, "exam", "i"))
+#         }
         
-        FILTER NOT EXISTS {
-            ?unit terms:prerequisites_cnf ?prereq .
-            ?a terms:code ?prereq .
-            ?a rdf:type terms:Unit .
-            ?a terms:assessment ?prereqAssessment .
-            FILTER(REGEX(?prereqAssessment, "exam", "i"))
-        }
+#         FILTER NOT EXISTS {
+#             ?unit terms:prerequisites_cnf ?prereq .
+#             ?a terms:code ?prereq .
+#             ?a rdf:type terms:Unit .
+#             ?a terms:assessment ?prereqAssessment .
+#             FILTER(REGEX(?prereqAssessment, "exam", "i"))
+#         }
         
-    }
-"""
-# print("# Query 2 \n")
-# for row in g.query(q2):
-#     print(f"{row.code}, {row.title}, {row.p}")
+#     }
+# """
+# for row in g.query(q3):
+#     print(f"- {row.code}, {row.title}, {row.p}")
+# print("-------------------------------------------------------")
 
-# q3 Find all units that appear in more than 3 majors.
+# Query 3 : Find all units that appear in more than 3 majors
+print("Query 3 : Find all units that appear in more than 3 majors")
 q3 = """
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
@@ -174,14 +173,13 @@ q3 = """
     HAVING (COUNT(?major) > 3)
         
 """
-# print("# Query 3 \n")
-# for row in g.query(q3):
-#     print(f"{row.code}, {row.title}, {row.c}")
+for row in g.query(q3):
+    print(f"- {row.code}, {row.title}, {row.c}")
+print("-------------------------------------------------------")
 
-# q4 Find all units that appear in more than 3 majors.
-# Query 4 
-# user_input = input("Enter a search query: ")
-
+# Query 4 : Find all units that appear in more than 3 majors
+print("Query 4 : Basic search functionality in unit's description or outcomes")
+user_input = input("Enter a search query: ")
 q4 = f"""
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
@@ -197,7 +195,6 @@ q4 = f"""
         {{ ?unit terms:outcomes ?outcome . FILTER(CONTAINS(UCASE(?outcome), UCASE("{user_input}"))) }}
     }}
 """
-
-# print("# Query 4")
-# for row in g.query(q4):
-#     print(f"{row.code}, {row.title}")
+for row in g.query(q4):
+    print(f"- {row.code}, {row.title}")
+print("-------------------------------------------------------")
