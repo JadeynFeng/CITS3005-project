@@ -110,76 +110,94 @@ q1 = """
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
 
-    SELECT DISTINCT ?code ?title ?outcomes
+    SELECT DISTINCT ?code ?title (COUNT(?outcomes) AS ?c)
     WHERE {
         ?unit rdf:type terms:Unit . 
-        ?unit terms:code ?code . 
+        ?unit terms:code ?code .
         ?unit terms:title ?title . 
         ?unit terms:outcomes ?outcomes .
+    }
+    GROUP BY ?code
+    HAVING (COUNT(?outcomes) > 6)
+"""
+# print("# Query 1 \n")
+# for row in g.query(q1):
+#     print(f"{row.code}, {row.title}, {row.c}")
+
+
+# Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam.
+q2 = """
+    PREFIX terms: <http://uwabookofknowledge.org/terms/>
+    PREFIX unit: <http://uwabookofknowledge.org/unit/>
+    
+    SELECT ?code ?title ?p
+    WHERE {
+        ?unit rdf:type terms:Unit .
+        ?unit terms:code ?code .
+        ?unit terms:title ?title .
+        ?unit terms:level "3" .
+        ?unit terms:prerequisites_cnf ?p . 
         
-       
+        FILTER NOT EXISTS {
+            ?unit terms:assessment ?assessment .
+            FILTER(REGEX(?assessment, "exam", "i"))
+        }
+        
+        FILTER NOT EXISTS {
+            ?unit terms:prerequisites_cnf ?prereq .
+            ?a terms:code ?prereq .
+            ?a rdf:type terms:Unit .
+            ?a terms:assessment ?prereqAssessment .
+            FILTER(REGEX(?prereqAssessment, "exam", "i"))
+        }
+        
     }
 """
-print("# Query 1 \n")
-for row in g.query(q1):
-    print(f"{row.code}, {row.title}, {row.outcomes}")
-
-# # Query 2 Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam.
-# q2 = """
-#     PREFIX major: <http://uwabookofknowledge.org/major/>
-#     PREFIX terms: <http://uwabookofknowledge.org/terms/>
-#     PREFIX unit: <http://uwabookofknowledge.org/unit/>
-    
-#     SELECT ?title
-#     WHERE {
-#         ?b rdf:type terms:Book . 
-#         ?b terms:title ?title . 
-#         ?b terms:isPartOf ?s . 
-#         ?s rdf:type terms:Series . 
-#         ?s terms:series "Percy Jackson" . 
-
-#     }
-# """
-# print("# Query 2 returns the 'title' of all ``terms:Book`` instances part of the Percy Jackson series.\n")
+# print("# Query 2 \n")
 # for row in g.query(q2):
-#     print(row["title"])
+#     print(f"{row.code}, {row.title}, {row.p}")
 
-# # Query 3 Find all units that appear in more than 3 majors.
-# q3 = """
-#     PREFIX major: <http://uwabookofknowledge.org/major/>
-#     PREFIX terms: <http://uwabookofknowledge.org/terms/>
-#     PREFIX unit: <http://uwabookofknowledge.org/unit/>
+# q3 Find all units that appear in more than 3 majors.
+q3 = """
+    PREFIX terms: <http://uwabookofknowledge.org/terms/>
+    PREFIX unit: <http://uwabookofknowledge.org/unit/>
+    PREFIX major: <http://uwabookofknowledge.org/major/>
     
-#     SELECT ?title
-#     WHERE {
-#         ?b rdf:type terms:Book . 
-#         ?b terms:title ?title . 
-#         ?b terms:isPartOf ?s . 
-#         ?s rdf:type terms:Series . 
-#         ?s terms:series "Percy Jackson" . 
-
-#     }
-# """
-# print("# Query 3 Find all units that appear in more than 3 majors.\n")
+    SELECT ?code ?title (COUNT(?major) AS ?c)
+    WHERE {
+        ?unit rdf:type terms:Unit .
+        ?unit terms:code ?code .
+        ?unit terms:title ?title .
+        ?unit terms:majors ?major .
+    }
+    GROUP BY ?code
+    HAVING (COUNT(?major) > 3)
+        
+"""
+# print("# Query 3 \n")
 # for row in g.query(q3):
-#     print(row["title"])
+#     print(f"{row.code}, {row.title}, {row.c}")
 
-# # Query 4 
-# q3 = """
-#     PREFIX major: <http://uwabookofknowledge.org/major/>
-#     PREFIX terms: <http://uwabookofknowledge.org/terms/>
-#     PREFIX unit: <http://uwabookofknowledge.org/unit/>
-    
-#     SELECT ?title
-#     WHERE {
-#         ?b rdf:type terms:Book . 
-#         ?b terms:title ?title . 
-#         ?b terms:isPartOf ?s . 
-#         ?s rdf:type terms:Series . 
-#         ?s terms:series "Percy Jackson" . 
+# q4 Find all units that appear in more than 3 majors.
+# Query 4 
+# user_input = input("Enter a search query: ")
 
-#     }
-# """
-# print("# Query 3 Find all units that appear in more than 3 majors.\n")
-# for row in g.query(q3):
-#     print(row["title"])
+q4 = f"""
+    PREFIX unit: <http://uwabookofknowledge.org/unit/>
+    PREFIX terms: <http://uwabookofknowledge.org/terms/>
+
+    SELECT DISTINCT ?code ?title
+    WHERE {{
+        ?unit rdf:type terms:Unit .
+        ?unit terms:code ?code .
+        ?unit terms:title ?title .
+        
+        {{ ?unit terms:description ?description . FILTER(CONTAINS(UCASE(?description), UCASE("{user_input}"))) }}
+        UNION
+        {{ ?unit terms:outcomes ?outcome . FILTER(CONTAINS(UCASE(?outcome), UCASE("{user_input}"))) }}
+    }}
+"""
+
+# print("# Query 4")
+# for row in g.query(q4):
+#     print(f"{row.code}, {row.title}")
