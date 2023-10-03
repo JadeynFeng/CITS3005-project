@@ -1,0 +1,16 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix unit_ns: <http://uwabookofknowledge.org/unit/> .
+@prefix major_ns: <http://uwabookofknowledge.org/major/> .
+@prefix terms_ns: <http://uwabookofknowledge.org/terms/> .
+
+# Constraint 1 : Every prerequisite for a level X unit should have a level less than X
+
+
+# Constraint 2 : No unit should be its own prerequisite
+
+
+# Constraint 3 : No major should require more than 40 contact hours per week
+
+
