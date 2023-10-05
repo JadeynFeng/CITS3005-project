@@ -146,7 +146,6 @@ q2 = """
         ?unit terms:title ?title .
         ?unit terms:level "3" .
         
-        
         FILTER NOT EXISTS {
             ?unit terms:assessment ?assessment .
             FILTER(REGEX(?assessment, "exam", "i"))
@@ -160,7 +159,6 @@ q2 = """
             ?orReq terms:assessment ?test .
             FILTER(REGEX(?test, "exam", "i"))
         }
-        
     } 
 """
 # for row in g.query(q2):
@@ -184,15 +182,13 @@ q3 = """
         ?unit terms:title ?title. 
     }
     GROUP BY ?code
-    HAVING (COUNT(?major) > 3)
-    
-        
+    HAVING (COUNT(?major) > 3)     
 """
-for row in g.query(q3):
-    print(f"- {row.code}, {row.title}, {row.m}")
-print("-------------------------------------------------------")
+# for row in g.query(q3):
+#     print(f"- {row.code}, {row.title}, {row.m}")
+# print("-------------------------------------------------------")
 
-# Query 4 : Find all units that appear in more than 3 majors
+# Query 4 : Basic search functionality in unit's description or outcomes
 print("Query 4 : Basic search functionality in unit's description or outcomes")
 user_input = input("Enter a search query: ")
 q4 = f"""
@@ -210,6 +206,128 @@ q4 = f"""
         {{ ?unit terms:outcomes ?outcome . FILTER(CONTAINS(UCASE(?outcome), UCASE("{user_input}"))) }}
     }}
 """
-for row in g.query(q4):
-    print(f"- {row.code}, {row.title}")
-print("-------------------------------------------------------")
+# for row in g.query(q4):
+#     print(f"- {row.code}, {row.title}")
+# print("-------------------------------------------------------")
+
+# Query 5 : Find all units with a specific major
+print("Query 5 : Find all units with a specific major")
+user_input = input("Enter a major code: ")
+q5 = f"""
+    PREFIX unit: <http://uwabookofknowledge.org/unit/>
+    PREFIX terms: <http://uwabookofknowledge.org/terms/>
+    PREFIX major: <http://uwabookofknowledge.org/major/>
+    
+    SELECT ?code ?title
+    WHERE {{
+        ?major terms:code "{user_input}" .
+        ?major terms:units ?unit .
+        ?unit terms:code ?code .
+        ?unit terms:title ?title .
+    }}
+"""
+# for row in g.query(q5):
+#     print(f"- {row.code}, {row.title}")
+# print("-------------------------------------------------------")
+
+# Query 6 : Find all prerequisites for a given unit
+print("Query 6 : Find all prerequisites for a given unit")
+user_input = input("Enter a unit code: ")
+q6 = f"""
+    PREFIX unit: <http://uwabookofknowledge.org/unit/>
+    PREFIX terms: <http://uwabookofknowledge.org/terms/>
+    PREFIX major: <http://uwabookofknowledge.org/major/>
+    PREFIX prereq: <http://uwabookofknowledge.org/prereq/>
+    
+    SELECT ?code ?title
+    WHERE {{
+        unit:{user_input} terms:prerequisites_cnf ?prereq_group .
+        ?prereq_group rdf:type terms:AndReq .
+        ?prereq_group terms:orReqs ?prereq_unit .
+        ?prereq_unit terms:code ?code .
+        ?prereq_unit terms:title ?title .
+    }}
+"""
+# for row in g.query(q6):
+#     print(f"- {row.code}, {row.title}")
+# print("-------------------------------------------------------")
+
+# Query 7 : Find all units with a specific level
+print("Query 7 : Find all units with a specific level")
+user_input = input("Enter a level (1-5): ")
+q7 = f"""
+    PREFIX unit: <http://uwabookofknowledge.org/unit/>
+    PREFIX terms: <http://uwabookofknowledge.org/terms/>
+    PREFIX major: <http://uwabookofknowledge.org/major/>
+    
+    SELECT ?code ?title
+    WHERE {{
+        ?unit rdf:type terms:Unit .
+        ?unit terms:level ?level .
+        ?unit terms:code ?code .
+        ?unit terms:title ?title .
+        FILTER (?level = "{user_input}")
+    }}
+"""
+# for row in g.query(q7):
+#     print(f"- {row.code}, {row.title}")
+# print("-------------------------------------------------------")
+
+# Query 8 : Find units with credit level 12
+print("Query 8 : Find units with credit level 12")
+q8 = """
+    PREFIX unit: <http://uwabookofknowledge.org/unit/>
+    PREFIX terms: <http://uwabookofknowledge.org/terms/>
+    
+    SELECT ?code ?title
+    WHERE {
+        ?unit rdf:type terms:Unit .
+        ?unit terms:credit ?credit .
+        ?unit terms:code ?code .
+        ?unit terms:title ?title .
+        FILTER (?credit = "12")
+    }
+"""
+# for row in g.query(q8):
+#     print(f"- {row.code}, {row.title}")
+# print("-------------------------------------------------------")
+
+# Query 9 : Find all majors that require a specific unit
+print("Query 9 : Find all majors that require a specific unit")
+user_input = input("Enter a unit code: ")
+q9 = f"""
+    PREFIX unit: <http://uwabookofknowledge.org/unit/>
+    PREFIX terms: <http://uwabookofknowledge.org/terms/>
+    PREFIX major: <http://uwabookofknowledge.org/major/>
+    
+    SELECT ?code ?title
+    WHERE {{
+        ?major rdf:type terms:Major .
+        ?major terms:units unit:{user_input} .
+        ?major terms:code ?code .
+        ?major terms:title ?title .
+    }}
+"""
+# for row in g.query(q9):
+#     print(f"- {row.code}, {row.title}")
+# print("-------------------------------------------------------")
+
+# Query 10 : Find units with a specific delivery mode
+print("Query 10 : Find units with a specific delivery mode (Face to face, Online, Both)")
+user_input = input("Enter a delivery mode ('Face to face', 'Online', 'Both'): ").capitalize()
+q10 = f"""
+    PREFIX unit: <http://uwabookofknowledge.org/unit/>
+    PREFIX terms: <http://uwabookofknowledge.org/terms/>
+    
+    SELECT ?code ?title
+    WHERE {{
+        ?unit rdf:type terms:Unit .
+        ?unit terms:delivery_mode ?mode .
+        ?unit terms:code ?code .
+        ?unit terms:title ?title .
+        FILTER (?mode = "{user_input}")
+    }}
+"""
+# for row in g.query(q10):
+#     print(f"- {row.code}, {row.title}")
+# print("-------------------------------------------------------")
