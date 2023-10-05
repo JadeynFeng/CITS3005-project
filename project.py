@@ -139,16 +139,13 @@ q2 = """
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     
-    SELECT ?code ?title ?pre
+    SELECT ?code ?title
     WHERE {
         ?unit rdf:type terms:Unit .
         ?unit terms:code ?code .
         ?unit terms:title ?title .
         ?unit terms:level "3" .
-        ?unit terms:prerequisites_cnf ?andReq . 
-        ?andReq rdf:type terms:AndReq . 
-        ?andReq terms:orReqs ?orReq . 
-        ?orReq terms:code ?pre .
+        
         
         FILTER NOT EXISTS {
             ?unit terms:assessment ?assessment .
@@ -156,14 +153,18 @@ q2 = """
         }
 
         FILTER NOT EXISTS {
+            ?unit terms:prerequisites_cnf ?andReq . 
+            ?andReq rdf:type terms:AndReq . 
+            ?andReq terms:orReqs ?orReq . 
+            ?orReq terms:code ?pre .
             ?orReq terms:assessment ?test .
             FILTER(REGEX(?test, "exam", "i"))
         }
         
-    }
+    } 
 """
 for row in g.query(q2):
-    print(f"- {row.code}, {row.title}, {row.pre}")
+    print(f"- {row.code}, {row.title}")
 print("-------------------------------------------------------")
 
 # Query 3 : Find all units that appear in more than 3 majors
