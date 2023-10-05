@@ -101,7 +101,7 @@ for major_code, major_data in majors_data.items():
         g.add((major_uri, TERMS.bridging, Literal(bridge)))
         
     for unit in major_data["units"]:
-        g.add((major_uri, TERMS.units, Literal(unit)))
+        g.add((major_uri, TERMS.units, UNIT[unit]))
 
 g.bind("terms",TERMS)
 g.bind("unit", UNIT)
@@ -129,9 +129,9 @@ q1 = """
     GROUP BY ?code
     HAVING (COUNT(?outcomes) > 6)
 """
-for row in g.query(q1):
-    print(f"- {row.code}, {row.title}, {row.c}")
-print("-------------------------------------------------------")
+# for row in g.query(q1):
+#     print(f"- {row.code}, {row.title}, {row.c}")
+# print("-------------------------------------------------------")
     
 # Query 2 : Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam
 print("Query 2 : Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam")
@@ -163,9 +163,9 @@ q2 = """
         
     } 
 """
-for row in g.query(q2):
-    print(f"- {row.code}, {row.title}")
-print("-------------------------------------------------------")
+# for row in g.query(q2):
+#     print(f"- {row.code}, {row.title}")
+# print("-------------------------------------------------------")
 
 # Query 3 : Find all units that appear in more than 3 majors
 print("Query 3 : Find all units that appear in more than 3 majors")
@@ -174,19 +174,22 @@ q3 = """
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     PREFIX major: <http://uwabookofknowledge.org/major/>
     
-    SELECT ?code ?title (COUNT(?major) AS ?c)
+    SELECT ?code ?title (COUNT(?major) AS ?m)
     WHERE {
+        ?maj rdf:type terms:Major .
+        ?maj terms:title ?major . 
+        ?maj terms:units ?unit . 
         ?unit rdf:type terms:Unit .
-        ?unit terms:code ?code .
-        ?unit terms:title ?title .
-        ?unit terms:majors ?major .
+        ?unit terms:code ?code. 
+        ?unit terms:title ?title. 
     }
     GROUP BY ?code
     HAVING (COUNT(?major) > 3)
+    
         
 """
 for row in g.query(q3):
-    print(f"- {row.code}, {row.title}, {row.c}")
+    print(f"- {row.code}, {row.title}, {row.m}")
 print("-------------------------------------------------------")
 
 # Query 4 : Find all units that appear in more than 3 majors
