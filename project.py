@@ -8,6 +8,7 @@ g = Graph()
 UNIT = Namespace("http://uwabookofknowledge.org/unit/")
 MAJOR = Namespace("http://uwabookofknowledge.org/major/")
 TERMS = Namespace("http://uwabookofknowledge.org/terms/")
+PREREQ = Namespace("http://uwabookofknowledge.org/prereq/")
 
 # Load JSON data from the file
 with open("units.json", "r") as json_file:
@@ -48,10 +49,6 @@ for unit_code, unit_data in units_data.items():
     if "prerequisites_text" in unit_data:
         g.add((unit_uri, TERMS.prerequisites_text, Literal(unit_data["prerequisites_text"])))
     
-    if "prerequisites_cnf" in unit_data:
-        for prereq_list in unit_data["prerequisites_cnf"]:
-            for prereq in prereq_list:
-                g.add((unit_uri, TERMS.prerequisites_cnf, Literal(prereq)))
 
     if "advisable_prior_study" in unit_data:
         for prior_study in unit_data["advisable_prior_study"]:
@@ -64,7 +61,20 @@ for unit_code, unit_data in units_data.items():
     if "note" in unit_data:
         g.add((unit_uri, TERMS.note, Literal(unit_data["note"])))
 
+for unit_code, unit_data in units_data.items():
+    if "prerequisites_cnf" in unit_data:
+        unit_uri = UNIT[unit_code]
+        counter = 0 
+        for prereq_list in unit_data["prerequisites_cnf"]:
+            name = unit_code+"andReqs"+str(counter)
+            prereq = PREREQ[name]
+            g.add((prereq, RDF.type, TERMS.AndReq))
+            for p in prereq_list:
+                g.add((prereq, TERMS.orReqs, UNIT[p]))
+            g.add((unit_uri, TERMS.prerequisites_cnf, prereq))
+            counter += 1
 
+        
 # Iterate through the majors JSON data and create RDF triples
 for major_code, major_data in majors_data.items():
     major_uri = MAJOR[major_code]
@@ -96,9 +106,10 @@ for major_code, major_data in majors_data.items():
 g.bind("terms",TERMS)
 g.bind("unit", UNIT)
 g.bind("major", MAJOR)
+g.bind("prereq", PREREQ)
 
 # Serialize the RDF graph to a file (e.g., in Turtle format)
-g.serialize("project.rdf", format="turtle")
+g.serialize("project.rdf", format="xml")
 
 # QUERIES ===============================================================
 print("======================= QUERIES =======================")
@@ -123,37 +134,37 @@ for row in g.query(q1):
 print("-------------------------------------------------------")
     
 # Query 2 : Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam
-# print("Query 2 : Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam")
-# q2 = """
-#     PREFIX terms: <http://uwabookofknowledge.org/terms/>
-#     PREFIX unit: <http://uwabookofknowledge.org/unit/>
+print("Query 2 : Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam")
+q2 = """
+    PREFIX terms: <http://uwabookofknowledge.org/terms/>
+    PREFIX unit: <http://uwabookofknowledge.org/unit/>
     
-#     SELECT ?code ?title ?p
-#     WHERE {
-#         ?unit rdf:type terms:Unit .
-#         ?unit terms:code ?code .
-#         ?unit terms:title ?title .
-#         ?unit terms:level "3" .
-#         ?unit terms:prerequisites_cnf ?p . 
+    SELECT ?code ?title ?pre
+    WHERE {
+        ?unit rdf:type terms:Unit .
+        ?unit terms:code ?code .
+        ?unit terms:title ?title .
+        ?unit terms:level "3" .
+        ?unit terms:prerequisites_cnf ?andReq . 
+        ?andReq rdf:type terms:AndReq . 
+        ?andReq terms:orReqs ?orReq . 
+        ?orReq terms:code ?pre .
         
-#         FILTER NOT EXISTS {
-#             ?unit terms:assessment ?assessment .
-#             FILTER(REGEX(?assessment, "exam", "i"))
-#         }
+        FILTER NOT EXISTS {
+            ?unit terms:assessment ?assessment .
+            FILTER(REGEX(?assessment, "exam", "i"))
+        }
+
+        FILTER NOT EXISTS {
+            ?orReq terms:assessment ?test .
+            FILTER(REGEX(?test, "exam", "i"))
+        }
         
-#         FILTER NOT EXISTS {
-#             ?unit terms:prerequisites_cnf ?prereq .
-#             ?a terms:code ?prereq .
-#             ?a rdf:type terms:Unit .
-#             ?a terms:assessment ?prereqAssessment .
-#             FILTER(REGEX(?prereqAssessment, "exam", "i"))
-#         }
-        
-#     }
-# """
-# for row in g.query(q3):
-#     print(f"- {row.code}, {row.title}, {row.p}")
-# print("-------------------------------------------------------")
+    }
+"""
+for row in g.query(q2):
+    print(f"- {row.code}, {row.title}, {row.pre}")
+print("-------------------------------------------------------")
 
 # Query 3 : Find all units that appear in more than 3 majors
 print("Query 3 : Find all units that appear in more than 3 majors")
