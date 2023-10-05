@@ -331,3 +331,50 @@ q10 = f"""
 # for row in g.query(q10):
 #     print(f"- {row.code}, {row.title}")
 # print("-------------------------------------------------------")
+
+
+# Query 11: Find units with school in Molecular Sciences and is 6 points. 
+print("Query 11 : Find units with the prerequisite BIOC1001")
+q11 = """
+    PREFIX unit: <http://uwabookofknowledge.org/unit/>
+    PREFIX terms: <http://uwabookofknowledge.org/terms/>
+    
+    SELECT ?code ?title
+    WHERE {
+        ?unit rdf:type terms:Unit .
+        ?unit terms:code ?code .
+        ?unit terms:title ?title .
+        ?unit terms:school "Molecular Sciences" . 
+        ?unit terms:credit "6" . 
+
+    }
+"""
+# for row in g.query(q11):
+#     print(f"- {row.code}, {row.title}")
+# print("-------------------------------------------------------")
+
+# Query 12 : Find all Molecular Sciences units that do not have BIOC2002 as a prerequisite
+print("Query 12 : Find all Molecular Sciences units that do not have BIOC2002 as a prerequisite")
+q12 = """
+    PREFIX terms: <http://uwabookofknowledge.org/terms/>
+    PREFIX unit: <http://uwabookofknowledge.org/unit/>
+    
+    SELECT ?code ?title
+    WHERE {
+        ?unit rdf:type terms:Unit .
+        ?unit terms:code ?code .
+        ?unit terms:title ?title .
+        ?unit terms:school "Molecular Sciences" . 
+
+        FILTER NOT EXISTS {
+            ?unit terms:prerequisites_cnf ?andReq . 
+            ?andReq rdf:type terms:AndReq . 
+            ?andReq terms:orReqs ?orReq . 
+            ?orReq terms:code ?pre .
+            FILTER(REGEX(?pre, "BIOC2002", "i"))
+        }
+    } 
+"""
+for row in g.query(q12):
+    print(f"- {row.code}, {row.title}")
+print("-------------------------------------------------------")
