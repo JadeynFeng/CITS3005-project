@@ -9,6 +9,7 @@ UNIT = Namespace("http://uwabookofknowledge.org/unit/")
 MAJOR = Namespace("http://uwabookofknowledge.org/major/")
 TERMS = Namespace("http://uwabookofknowledge.org/terms/")
 PREREQ = Namespace("http://uwabookofknowledge.org/prereq/")
+CONTACT = Namespace("http://uwabookofknowledge.org/contact/")
 
 # Load JSON data from the file
 with open("units.json", "r") as json_file:
@@ -48,33 +49,35 @@ for unit_code, unit_data in units_data.items():
 
     if "prerequisites_text" in unit_data:
         g.add((unit_uri, TERMS.prerequisites_text, Literal(unit_data["prerequisites_text"])))
-    
 
     if "advisable_prior_study" in unit_data:
         for prior_study in unit_data["advisable_prior_study"]:
             g.add((unit_uri, TERMS.advisable_prior_study, Literal(prior_study)))
-
+    
     if "contact" in unit_data:
-        for key, value in unit_data["contact"].items():
-            g.add((unit_uri, TERMS.contact, Literal(f"{key}: {value}")))
-
+        for contact, hours in unit_data["contact"].items():
+            contact_uri = CONTACT[contact]
+            g.add((contact_uri, RDF.type, TERMS.Contact))
+            g.add((contact_uri, TERMS.hours, Literal(hours)))
+            g.add((unit_uri, TERMS.contact, contact_uri))
+            
     if "note" in unit_data:
         g.add((unit_uri, TERMS.note, Literal(unit_data["note"])))
 
+# Iterate through the units JSON data to store prerequisites in RDF
 for unit_code, unit_data in units_data.items():
     if "prerequisites_cnf" in unit_data:
         unit_uri = UNIT[unit_code]
         counter = 0 
         for prereq_list in unit_data["prerequisites_cnf"]:
             name = unit_code+"andReqs"+str(counter)
-            prereq = PREREQ[name]
-            g.add((prereq, RDF.type, TERMS.AndReq))
+            prereq_uri = PREREQ[name]
+            g.add((prereq_uri, RDF.type, TERMS.AndReq))
             for p in prereq_list:
-                g.add((prereq, TERMS.orReqs, UNIT[p]))
-            g.add((unit_uri, TERMS.prerequisites_cnf, prereq))
+                g.add((prereq_uri, TERMS.orReqs, UNIT[p]))
+            g.add((unit_uri, TERMS.prerequisites_cnf, prereq_uri))
             counter += 1
 
-        
 # Iterate through the majors JSON data and create RDF triples
 for major_code, major_data in majors_data.items():
     major_uri = MAJOR[major_code]
@@ -107,6 +110,7 @@ g.bind("terms",TERMS)
 g.bind("unit", UNIT)
 g.bind("major", MAJOR)
 g.bind("prereq", PREREQ)
+g.bind("contact", CONTACT)
 
 # Serialize the RDF graph to a file (e.g., in Turtle format)
 g.serialize("project.rdf", format="xml")

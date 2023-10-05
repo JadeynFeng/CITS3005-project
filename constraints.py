@@ -2,7 +2,7 @@ from rdflib import Graph
 from pyshacl import validate
 
 handbook = Graph()
-handbook.parse('project.rdf', format='turtle')
+handbook.parse('project.rdf', format='xml')
 shapes = Graph()
 shapes.parse('constraints.shacl', format='turtle')
 
