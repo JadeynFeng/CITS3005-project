@@ -55,11 +55,15 @@ for unit_code, unit_data in units_data.items():
             g.add((unit_uri, TERMS.advisable_prior_study, Literal(prior_study)))
     
     if "contact" in unit_data:
+        totalHours = 0
         for contact, hours in unit_data["contact"].items():
-            contact_uri = CONTACT[contact]
+            contact_uri = CONTACT[unit_code+"_"+contact.lower().replace(" ", "_")]
             g.add((contact_uri, RDF.type, TERMS.Contact))
+            g.add((contact_uri, TERMS.activity, Literal(contact)))
             g.add((contact_uri, TERMS.hours, Literal(hours)))
             g.add((unit_uri, TERMS.contact, contact_uri))
+            totalHours += int(hours)
+        g.add((unit_uri, TERMS.total_hours, Literal(totalHours)))
             
     if "note" in unit_data:
         g.add((unit_uri, TERMS.note, Literal(unit_data["note"])))
@@ -350,7 +354,6 @@ q11 = """
         ?unit terms:title ?title .
         ?unit terms:school "Molecular Sciences" . 
         ?unit terms:credit "6" . 
-
     }
 """
 # for row in g.query(q11):
