@@ -1,16 +1,65 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix unit_ns: <http://uwabookofknowledge.org/unit/> .
-@prefix major_ns: <http://uwabookofknowledge.org/major/> .
-@prefix terms_ns: <http://uwabookofknowledge.org/terms/> .
+@prefix unit: <http://uwabookofknowledge.org/unit/> .
+@prefix major: <http://uwabookofknowledge.org/major/> .
+@prefix terms: <http://uwabookofknowledge.org/terms/> .
 
 # Constraint 1 : Every prerequisite for a level X unit should have a level less than X
-
+# unit:UnitShape a sh:NodeShape ; 
+#     sh:targetClass terms:Unit ; 
+#     sh:sparql [
+#         sh:massage "Every prerequisite for a level X unit should have a level less than X." ; 
+#         sh:prefixes terms: ; 
+#         sh:select """
+#             SELECT $this (terms:code AS ?path) ?value 
+#             WHERE {
+#                 $this terms:level ?oglevel . 
+#                 $this terms:prerequisites_cnf ?andReq . 
+#                 ?andReq rdf:type terms:AndReq . 
+#                 ?andReq terms:orReqs ?orReq . 
+#                 ?orReq terms:code ?value .
+#                 ?orReq terms:level ?level .
+#                 FILTER (isLiteral(?level) && ?level >= ?oglevel)
+#             }
+#         """ ;
+#     ] . 
 
 # Constraint 2 : No unit should be its own prerequisite
+# unit:UnitShape a sh:NodeShape ; 
+#     sh:targetClass terms:Unit ; 
+#     sh:sparql [
+#         sh:massage "No unit should be its own prerequisite." ; 
+#         sh:prefixes terms: ; 
+#         sh:select """
+#             SELECT $this (terms:code AS ?path) ?value 
+#             WHERE {
+#                 $this terms:code ?ogcode . 
+#                 $this terms:prerequisites_cnf ?andReq . 
+#                 ?andReq rdf:type terms:AndReq . 
+#                 ?andReq terms:orReqs ?orReq . 
+#                 ?orReq terms:code ?value .
+#                 FILTER (isLiteral(?value) && ?value = ?ogcode)
+#             }
+#         """ ;
+#     ] . 
 
 
 # Constraint 3 : No major should require more than 40 contact hours per week
-
+unit:UnitShape a sh:NodeShape ; 
+    sh:targetClass terms:Major ; 
+    sh:sparql [
+        sh:massage "No major should require more than 40 contact hours per week." ; 
+        sh:prefixes terms: ; 
+        sh:select """
+            SELECT $this (SUM(?totalhours) AS ?value )
+            WHERE {
+                $this terms:units ?unit . 
+                ?unit terms:level ?level . 
+                ?unit terms:total_hours ?totalhours . 
+            }
+            GROUP BY $this ?level
+            HAVING (SUM(?totalhours) > 40)
+        """ ;
+    ] . 
 
