@@ -48,25 +48,68 @@
 
 ## Constraints
 
-1. Prerequisite Level Constraint
+### 1. Prerequisite Level Constraint
 - Every prerequisite for a level X unit should have a level less than X
 - The prerequisites for a unit are at a lower level than the unit itself
 - For example, if a unit is at Level 3, its prerequisites should be at Level 1 or Level 2.
 
-2. No Self-Prerequisite Constraint
+### 2. No Self-Prerequisite Constraint
 - No unit should be its own prerequisite
 - A unit cannot require itself as a prerequisite for completion
 
-3. Contact Hours Constraint
+### 3. Contact Hours Constraint
 - No major should require more than 40 contact hours per week
 - Limits the total contact hours (e.g., lecture hours, lab hours) per week for any major to be no more than 40 hours
+
+## Executing Constraints Validation
+
+1. Run `python3 constraints.py` to start the script to load the shapes graph for running validation
+2. It display the validation results, including any errors or compliance information.
 
 ## Ontology Rules
 
 
 # Executing Queries
 
+1. Run `python3 project.py` to start the script to load the data into RDFLib and execute some SPARQL queries
+2. There will be prompts for user input to execute specific queries
 
+## Queries List
+### 1. Find all units with more than 6 outcomes
+- This query retrieves all units with more than 6 outcomes.
+
+### 2. Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam
+- This query identifies level 3 units without exams and ensures that none of their prerequisites have an exam.
+
+### 3. Find all units that appear in more than 3 majors
+- This query locates units that are part of more than 3 majors.
+
+### 4. Basic search functionality in unit's description or outcomes
+- This query allows you to perform a basic search in unit descriptions or outcomes by inputting a search string.
+
+### 5. Find all units with a specific major
+- This query retrieves all units associated with a specific major using its major code.
+
+### 6. Find all prerequisites for a given unit
+- This query provides a list of prerequisites for a given unit using its unit code.
+
+### 7. Find all units with a specific level
+- This query finds all units at a specific level by inputting a integer.
+
+### 8. Find units with 12 credit points
+- This query locates units that gives 12 credit points on completion.
+
+### 9. Find all majors that require a specific unit
+- This query identifies all majors that require a specific unit, specified by its unit code.
+
+### 10. Find units with a specific delivery mode
+- This query retrieves units based on a specific delivery mode, such as "Face to face," "Online," or "Both."
+
+### 11. Find units with school in Molecular Sciences and is 6 credit points
+- This query finds units in the Molecular Sciences school that are 6 credit points in size.
+
+### 12. Find all Molecular Sciences units that do not have BIOC2002 as a prerequisite
+- This query identifies Molecular Sciences units that do not require BIOC2002 as a prerequisite.
 
 # Instructions
 ## How to add data

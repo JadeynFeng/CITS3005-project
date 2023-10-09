@@ -281,8 +281,8 @@ q7 = f"""
 #     print(f"- {row.code}, {row.title}")
 # print("-------------------------------------------------------")
 
-# Query 8 : Find units with credit level 12
-print("Query 8 : Find units with credit level 12")
+# Query 8 : Find units with 12 credit points
+print("Query 8 : Find units with 12 credit points")
 q8 = """
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
@@ -341,8 +341,8 @@ q10 = f"""
 # print("-------------------------------------------------------")
 
 
-# Query 11: Find units with school in Molecular Sciences and is 6 points. 
-print("Query 11 : Find units with the prerequisite BIOC1001")
+# Query 11: Find units with school in Molecular Sciences and is 6 credit points. 
+print("Query 11 : Find units with school in Molecular Sciences and is 6 credit points")
 q11 = """
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
