@@ -26,7 +26,7 @@
 #     ] . 
 
 # Constraint 2 : No unit should be its own prerequisite
-# unit:UnitShape a sh:NodeShape ; 
+# unit:UnitShape2 a sh:NodeShape ; 
 #     sh:targetClass terms:Unit ; 
 #     sh:sparql [
 #         sh:massage "No unit should be its own prerequisite." ; 
@@ -46,7 +46,7 @@
 
 
 # Constraint 3 : No major should require more than 40 contact hours per week
-unit:UnitShape a sh:NodeShape ; 
+unit:MajorShape1 a sh:NodeShape ; 
     sh:targetClass terms:Major ; 
     sh:sparql [
         sh:massage "No major should require more than 40 contact hours per week." ; 
