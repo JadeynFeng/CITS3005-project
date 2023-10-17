@@ -61,6 +61,11 @@ with onto:
         domain = [Prerequisite]
         range = [Unit]
 
+    # RULE 1: A prerequisite of a prerequisite is a prerequisite.
+    rule1 = Imp()
+    rule1.set_as_rule("""Unit(?a), Unit(?b), Prerequisite(?p), prerequisitesCNF(?a, ?p), orReq(?p, ?b), prerequisitesCNF(?b, ?q) -> prerequisitesCNF(?a, q?)""" )
+
+
     class isPartOfMajor(DataProperty): 
             domain = [Unit]
             range = [str]
