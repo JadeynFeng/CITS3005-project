@@ -153,7 +153,7 @@ q2 = """
         ?unit rdf:type terms:Unit .
         ?unit terms:unitCode ?code .
         ?unit terms:unitTitle ?title .
-        ?unit terms:level "3" .
+        ?unit terms:level 3 .
         
         FILTER NOT EXISTS {
             ?unit terms:assessment ?assessment .
@@ -275,7 +275,7 @@ q7 = f"""
         ?unit terms:level ?level .
         ?unit terms:unitCode ?code .
         ?unit terms:unitTitle ?title .
-        FILTER (?level = "{user_input}")
+        FILTER (?level = "{int(user_input)}")
     }}
 """
 for row in g.query(q7):
@@ -294,7 +294,7 @@ q8 = """
         ?unit terms:credit ?credit .
         ?unit terms:unitCode ?code .
         ?unit terms:unitTitle ?title .
-        FILTER (?credit = "12")
+        FILTER (?credit = 12)
     }
 """
 for row in g.query(q8):
@@ -354,7 +354,7 @@ q11 = """
         ?unit terms:unitCode ?code .
         ?unit terms:unitTitle ?title .
         ?unit terms:unitSchool "Molecular Sciences" . 
-        ?unit terms:credit "6" . 
+        ?unit terms:credit 6 . 
     }
 """
 for row in g.query(q11):
