@@ -1,18 +1,22 @@
 from owlready2 import *
+import rdflib 
+
+# Load the knowledge graph for UWA handbook
+handbook = rdflib.Graph()
+handbook.parse('project.rdf', format='xml')
+
 onto_path.append(".")
-onto = get_ontology("/project.rdf").load()
+onto = get_ontology("http://uwabookofknowledge.org/ontology.owl#")
+
 
 with onto:
     # Define classes
     class Unit(Thing): pass
-
     class Major(Thing): pass
-
     class Prerequisite(Thing): pass
-
     class Contact(Thing): pass
 
-    # Define object properties
+    # Define object properties for Unit entity
     class unitCode(DataProperty, FunctionalProperty): 
         domain = [Unit]
         range = [str]
@@ -89,8 +93,7 @@ with onto:
         domain = [Unit]
         range = [Unit]
 
-
-
+    # Define object properties for Major entity
     class majorCode(DataProperty, FunctionalProperty): 
         domain = [Major]
         range = [str]
@@ -134,43 +137,12 @@ with onto:
     class containsUnit(ObjectProperty): 
         domain = [Major]
         range = [Unit]
-        # inverse_property = is_part_of_major
-        
-    # # Define rules
-    # class PrerequisiteOfPrerequisite(Prerequisite >> Prerequisite, FunctionalProperty):
-    #     pass
-    # class OutcomeOfCoreUnit(Outcome >> Major, FunctionalProperty):
-    #     pass
-    # # class PrerequisiteTextOfCoreUnit(Prerequisite >> str, FunctionalProperty):
-    # #     pass
 
-    # # Add data to Knowledge Graph
-    # # Add Unit
-    # new_unit = Unit("CITS1111")
-    # new_unit.has_unitcode = UnitCode("CITS1111")
-    # new_unit.has_unittitle = UnitTitle("Artificial Intelligence")
-    # new_unit.has_unitlevel.append(1)
-    # new_unit.has_outcome.append(Outcome("Learn about AI"))
-    # new_unit.has_assessment.append(Assessment("Exams"))
+    # Load ontology with data from knowledge graph
     
-    # # Add Major
-    # major = Major("CS")
-    # major.has_majorcode = MajorCode("CS")
-    # major.has_majortitle = MajorTitle("Computer Science")
-    # major.contains_unit.append(new_unit)
-    # new_unit.is_part_of_major.append(major)
-    
-    # # Update data in Knowledge Graph
-    # update_unit = onto.search_one(iri = "*CITS1111")
-    # update_unit.has_unitlevel.append(3)
-    # update_unit.has_outcome.append(Outcome("Learn about AI and ML"))
-    # update_unit.has_assessment.append(Assessment("Exams and assignments"))
-    
-    # # Delete data from Knowledge Graph
-    # delete_unit = onto.search_one(iri = "*CITS1111")
-    # destroy_entity(delete_unit)
 
-onto.load()
-sync_reasoner()
+
+
+
 
 onto.save(file = "ontology.owl", format = "rdfxml")

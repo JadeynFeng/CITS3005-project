@@ -14,9 +14,14 @@ conforms, results_graph, results_text = validate(handbook, shacl_graph=shapes, i
                                                  allow_warnings=False, meta_shacl=False, advanced=False, js=False, debug=False)
 
 # Print the results
+print(results_text)
 if conforms:
     print("The knowledge graph conforms to the constraints.")
 else:
     print("The knowledge graph does not conform to the constraints.")
     
-print(results_text)
+result_lines = results_text.split('\n')
+for line in result_lines:
+    if "Results" in line:
+        print(line.strip())
+        break
