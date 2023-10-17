@@ -59,7 +59,7 @@ for unit_code, unit_data in units_data.items():
             g.add((contact_uri, TERMS.hours, Literal(hours, datatype=XSD.integer)))
             g.add((unit_uri, TERMS.contact, contact_uri))
             totalHours += int(hours)
-    g.add((unit_uri, TERMS.total_hours, Literal(totalHours, datatype=XSD.integer)))
+    g.add((unit_uri, TERMS.totalHours, Literal(totalHours, datatype=XSD.integer)))
             
     if "note" in unit_data:
         g.add((unit_uri, TERMS.note, Literal(unit_data["note"])))
@@ -351,9 +351,9 @@ q11 = """
     SELECT ?code ?title
     WHERE {
         ?unit rdf:type terms:Unit .
-        ?unit terms:code ?code .
-        ?unit terms:title ?title .
-        ?unit terms:school "Molecular Sciences" . 
+        ?unit terms:unitCode ?code .
+        ?unit terms:unitTitle ?title .
+        ?unit terms:unitSchool "Molecular Sciences" . 
         ?unit terms:credit "6" . 
     }
 """
@@ -370,15 +370,15 @@ q12 = """
     SELECT ?code ?title
     WHERE {
         ?unit rdf:type terms:Unit .
-        ?unit terms:code ?code .
-        ?unit terms:title ?title .
-        ?unit terms:school "Molecular Sciences" . 
+        ?unit terms:unitCode ?code .
+        ?unit terms:unitTitle ?title .
+        ?unit terms:unitSchool "Molecular Sciences" . 
 
         FILTER NOT EXISTS {
-            ?unit terms:prerequisites_cnf ?andReq . 
+            ?unit terms:prerequisitesCNF ?andReq . 
             ?andReq rdf:type terms:AndReq . 
-            ?andReq terms:orReqs ?orReq . 
-            ?orReq terms:code ?pre .
+            ?andReq terms:orReq ?orReq . 
+            ?orReq terms:unitCode ?pre .
             FILTER(REGEX(?pre, "BIOC2002", "i"))
         }
     } 

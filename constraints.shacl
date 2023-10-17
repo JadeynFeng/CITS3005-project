@@ -12,13 +12,13 @@
 #         sh:massage "Every prerequisite for a level X unit should have a level less than X." ; 
 #         sh:prefixes terms: ; 
 #         sh:select """
-#             SELECT $this (terms:code AS ?path) ?value 
+#             SELECT $this (terms:unitCode AS ?path) ?value 
 #             WHERE {
 #                 $this terms:level ?oglevel . 
-#                 $this terms:prerequisites_cnf ?andReq . 
+#                 $this terms:prerequisitesCNF ?andReq . 
 #                 ?andReq rdf:type terms:AndReq . 
-#                 ?andReq terms:orReqs ?orReq . 
-#                 ?orReq terms:code ?value .
+#                 ?andReq terms:orReq ?orReq . 
+#                 ?orReq terms:unitCode ?value .
 #                 ?orReq terms:level ?level .
 #                 FILTER (isLiteral(?level) && ?level >= ?oglevel)
 #             }
@@ -32,13 +32,13 @@
 #         sh:massage "No unit should be its own prerequisite." ; 
 #         sh:prefixes terms: ; 
 #         sh:select """
-#             SELECT $this (terms:code AS ?path) ?value 
+#             SELECT $this (terms:unitCode AS ?path) ?value 
 #             WHERE {
-#                 $this terms:code ?ogcode . 
-#                 $this terms:prerequisites_cnf ?andReq . 
+#                 $this terms:unitCode ?ogcode . 
+#                 $this terms:prerequisitesCNF ?andReq . 
 #                 ?andReq rdf:type terms:AndReq . 
-#                 ?andReq terms:orReqs ?orReq . 
-#                 ?orReq terms:code ?value .
+#                 ?andReq terms:orReq ?orReq . 
+#                 ?orReq terms:unitCode ?value .
 #                 FILTER (isLiteral(?value) && ?value = ?ogcode)
 #             }
 #         """ ;
@@ -54,9 +54,9 @@
 #         sh:select """
 #             SELECT $this (SUM(?totalhours) AS ?value )
 #             WHERE {
-#                 $this terms:units ?unit . 
+#                 $this terms:containsUnit ?unit . 
 #                 ?unit terms:level ?level . 
-#                 ?unit terms:total_hours ?totalhours . 
+#                 ?unit terms:totalHours ?totalhours . 
 #             }
 #             GROUP BY $this ?level
 #             HAVING (SUM(?totalhours) > 40)
@@ -67,32 +67,32 @@
 # unit:UnitShape a sh:NodeShape ;
 #     sh:targetClass terms:Unit ;
 #     sh:property [       # Must have only 1 unit code
-#         sh:path terms:code ;
+#         sh:path terms:unitCode ;
 #         sh:minCount 1 ;
 #         sh:maxCount 1 ;
 #         sh:datatype xsd:string ;
 #         sh:pattern "^[A-Za-z]{4}[0-9]{4}$" ;
 #     ] ;
 #     sh:property [       # Must have only 1 unit title
-#         sh:path terms:title ;
+#         sh:path terms:unitTitle ;
 #         sh:minCount 1 ;
 #         sh:maxCount 1 ;
 #         sh:datatype xsd:string ; 
 #     ] ;
 #     sh:property [       # Must have only 1 school
-#         sh:path terms:school ;
+#         sh:path terms:unitSchool ;
 #         sh:minCount 1 ;
 #         sh:maxCount 1 ;
 #         sh:datatype xsd:string ; 
 #     ] ;
 #     sh:property [       # Must have only 1 board of examiners
-#         sh:path terms:board_of_examiners ;
+#         sh:path terms:unitBoard ;
 #         sh:minCount 1 ;
 #         sh:maxCount 1 ;
 #         sh:datatype xsd:string ; 
 #     ] ;
 #     sh:property [       # Must have only 1 delivery mode
-#         sh:path terms:delivery_mode ;
+#         sh:path terms:unitDelivery ;
 #         sh:minCount 1 ;
 #         sh:maxCount 1 ;
 #         sh:datatype xsd:string ;
@@ -107,7 +107,7 @@
 #         sh:datatype xsd:integer ;
 #     ] ;
 #     sh:property [       # Must have only 1 unit description
-#         sh:path terms:description ;
+#         sh:path terms:unitDescription ;
 #         sh:minCount 1 ;
 #         sh:maxCount 1 ;
 #         sh:datatype xsd:string ; 
@@ -123,23 +123,23 @@
 #         sh:datatype xsd:string ; 
 #     ] ;
 #     sh:property [       # Majors
-#         sh:path terms:majors ;
+#         sh:path terms:isPartOfMajor ;
 #         sh:datatype xsd:string ; 
 #     ] ;
 #     sh:property [       # Outcomes
-#         sh:path terms:outcomes ;
+#         sh:path terms:unitOutcome ;
 #         sh:datatype xsd:string ; 
 #     ] ;
 #     sh:property [       # Prerequisites Text
-#         sh:path terms:prerequisites_text ;
+#         sh:path terms:unitText ;
 #         sh:datatype xsd:string ; 
 #     ] ;
 #     sh:property [       # Advisable prior study
-#         sh:path terms:advisable_prior_study ;
+#         sh:path terms:advisablePriorStudy ;
 #         sh:class terms:Unit ;
 #     ] ;
 #     sh:property [       # Prerequisites CNF
-#         sh:path terms:prerequisites_cnf ;
+#         sh:path terms:prerequisitesCNF ;
 #         sh:class terms:AndReq ;
 #         sh:nodeKind sh:IRI ; 
 
@@ -150,7 +150,7 @@
 #         sh:nodeKind sh:IRI ; 
 #     ] ;
 #     sh:property [       # Must have only 1 total hours
-#         sh:path terms:total_hours ;
+#         sh:path terms:totalHours ;
 #         sh:minCount 1 ;
 #         sh:maxCount 1 ;
 #         sh:datatype xsd:integer ;
@@ -165,32 +165,32 @@
 # unit:MajorShape a sh:NodeShape ;
 #     sh:targetClass terms:Major ;
 #     sh:property [       # Must have only 1 major code
-#         sh:path terms:code ;
+#         sh:path terms:majorCode ;
 #         sh:minCount 1 ;
 #         sh:maxCount 1 ;
 #         sh:datatype xsd:string ;
 #         sh:pattern "^[A-Za-z]{3}-[A-Za-z]{5}$" ;
 #     ] ;
 #     sh:property [       # Must have only 1 major title
-#         sh:path terms:title ;
+#         sh:path terms:majorTitle ;
 #         sh:minCount 1 ;
 #         sh:maxCount 1 ;
 #         sh:datatype xsd:string ; 
 #     ] ;
 #     sh:property [       # Must have only 1 school
-#         sh:path terms:school ;
+#         sh:path terms:majorSchool ;
 #         sh:minCount 1 ;
 #         sh:maxCount 1 ;
 #         sh:datatype xsd:string ; 
 #     ] ;
 #     sh:property [       # Must have only 1 board of examiners
-#         sh:path terms:board_of_examiners ;
+#         sh:path terms:majorBoard ;
 #         sh:minCount 1 ;
 #         sh:maxCount 1 ;
 #         sh:datatype xsd:string ; 
 #     ] ;
 #     sh:property [       # Must have only 1 delivery mode
-#         sh:path terms:delivery_mode ;
+#         sh:path terms:majorDelivery ;
 #         sh:minCount 1 ;
 #         sh:maxCount 1 ;
 #         sh:datatype xsd:string ;
@@ -199,22 +199,22 @@
 #         ) ;
 #     ] ;
 #     sh:property [       # Must have only 1 description
-#         sh:path terms:description ;
+#         sh:path terms:majorDescription ;
 #         sh:minCount 1 ;
 #         sh:maxCount 1 ;
 #         sh:datatype xsd:string ; 
 #     ] ;
 #     sh:property [       # Prerequisites Text
-#         sh:path terms:prerequisites ;
+#         sh:path terms:majorText ;
 #         sh:datatype xsd:string ; 
 #     ] ;
 #     sh:property [       # Must have atleast 1 outcome
-#         sh:path terms:outcomes ;
+#         sh:path terms:majorOutcome ;
 #         sh:minCount 1 ;
 #         sh:datatype xsd:string ; 
 #     ] ;
 #     sh:property [       # Must have atleast 1 course
-#         sh:path terms:courses ;
+#         sh:path terms:course ;
 #         sh:minCount 1 ;
 #         sh:datatype xsd:string ; 
 #         sh:pattern "^[A-Za-z]{2}[0-9]{3}$" ;
@@ -225,7 +225,7 @@
 #         sh:nodeKind sh:IRI ; 
 #     ] ;
 #     sh:property [       # Must have atleast 1 core unit
-#         sh:path terms:units ;
+#         sh:path terms:containsUnit ;
 #         sh:minCount 1 ;
 #         sh:class terms:Unit ;
 #         sh:nodeKind sh:IRI ; 
@@ -251,7 +251,7 @@
 # unit:AndReqShape a sh:NodeShape ;
 #     sh:targetClass terms:AndReq ;
 #     sh:property [       # Must have atleast 1 orReq
-#         sh:path terms:orReqs ;
+#         sh:path terms:orReq ;
 #         sh:minCount 1 ;
 #         sh:class terms:Unit ;
 #         sh:nodeKind sh:IRI ; 
