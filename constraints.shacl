@@ -59,7 +59,7 @@
 #                 ?unit terms:totalHours ?totalhours . 
 #             }
 #             GROUP BY $this ?level
-#             HAVING (SUM(?totalhours) > 40)
+#             HAVING (SUM(?totalhours) > 80)
 #         """ ;
 #     ] . 
 
