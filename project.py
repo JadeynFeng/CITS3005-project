@@ -131,9 +131,9 @@ q1 = """
     SELECT DISTINCT ?code ?title (COUNT(?outcomes) AS ?c)
     WHERE {
         ?unit rdf:type terms:Unit . 
-        ?unit terms:code ?code .
-        ?unit terms:title ?title . 
-        ?unit terms:outcomes ?outcomes .
+        ?unit terms:unitCode ?code .
+        ?unit terms:unitTitle ?title . 
+        ?unit terms:unitOutcome ?outcomes .
     }
     GROUP BY ?code
     HAVING (COUNT(?outcomes) > 6)
@@ -151,8 +151,8 @@ q2 = """
     SELECT ?code ?title
     WHERE {
         ?unit rdf:type terms:Unit .
-        ?unit terms:code ?code .
-        ?unit terms:title ?title .
+        ?unit terms:unitCode ?code .
+        ?unit terms:unitTitle ?title .
         ?unit terms:level "3" .
         
         FILTER NOT EXISTS {
@@ -161,10 +161,10 @@ q2 = """
         }
 
         FILTER NOT EXISTS {
-            ?unit terms:prerequisites_cnf ?andReq . 
+            ?unit terms:prerequisitesCNF ?andReq . 
             ?andReq rdf:type terms:AndReq . 
-            ?andReq terms:orReqs ?orReq . 
-            ?orReq terms:code ?pre .
+            ?andReq terms:orReq ?orReq . 
+            ?orReq terms:unitCode ?pre .
             ?orReq terms:assessment ?test .
             FILTER(REGEX(?test, "exam", "i"))
         }
@@ -184,11 +184,11 @@ q3 = """
     SELECT ?code ?title (COUNT(?major) AS ?m)
     WHERE {
         ?maj rdf:type terms:Major .
-        ?maj terms:title ?major . 
-        ?maj terms:units ?unit . 
+        ?maj terms:majorTitle ?major . 
+        ?maj terms:containsUnit ?unit . 
         ?unit rdf:type terms:Unit .
-        ?unit terms:code ?code. 
-        ?unit terms:title ?title. 
+        ?unit terms:unitCode ?code. 
+        ?unit terms:unitTitle ?title. 
     }
     GROUP BY ?code
     HAVING (COUNT(?major) > 3)     
@@ -207,12 +207,12 @@ q4 = f"""
     SELECT DISTINCT ?code ?title
     WHERE {{
         ?unit rdf:type terms:Unit .
-        ?unit terms:code ?code .
-        ?unit terms:title ?title .
+        ?unit terms:unitCode ?code .
+        ?unit terms:unitTitle ?title .
         
-        {{ ?unit terms:description ?description . FILTER(CONTAINS(UCASE(?description), UCASE("{user_input}"))) }}
+        {{ ?unit terms:unitDescription ?description . FILTER(CONTAINS(UCASE(?description), UCASE("{user_input}"))) }}
         UNION
-        {{ ?unit terms:outcomes ?outcome . FILTER(CONTAINS(UCASE(?outcome), UCASE("{user_input}"))) }}
+        {{ ?unit terms:unitOutcome ?outcome . FILTER(CONTAINS(UCASE(?outcome), UCASE("{user_input}"))) }}
     }}
 """
 # for row in g.query(q4):
@@ -229,10 +229,10 @@ q5 = f"""
     
     SELECT ?code ?title
     WHERE {{
-        ?major terms:code "{user_input}" .
-        ?major terms:units ?unit .
-        ?unit terms:code ?code .
-        ?unit terms:title ?title .
+        ?major terms:majorCode "{user_input}" .
+        ?major terms:containsUnit ?unit .
+        ?unit terms:unitCode ?code .
+        ?unit terms:unitTitle ?title .
     }}
 """
 # for row in g.query(q5):
@@ -250,11 +250,11 @@ q6 = f"""
     
     SELECT ?code ?title
     WHERE {{
-        unit:{user_input} terms:prerequisites_cnf ?prereq_group .
+        unit:{user_input} terms:prerequisitesCNF ?prereq_group .
         ?prereq_group rdf:type terms:AndReq .
-        ?prereq_group terms:orReqs ?prereq_unit .
-        ?prereq_unit terms:code ?code .
-        ?prereq_unit terms:title ?title .
+        ?prereq_group terms:orReq ?prereq_unit .
+        ?prereq_unit terms:unitCode ?code .
+        ?prereq_unit terms:unitTitle ?title .
     }}
 """
 # for row in g.query(q6):
@@ -273,8 +273,8 @@ q7 = f"""
     WHERE {{
         ?unit rdf:type terms:Unit .
         ?unit terms:level ?level .
-        ?unit terms:code ?code .
-        ?unit terms:title ?title .
+        ?unit terms:unitCode ?code .
+        ?unit terms:unitTitle ?title .
         FILTER (?level = "{user_input}")
     }}
 """
@@ -292,8 +292,8 @@ q8 = """
     WHERE {
         ?unit rdf:type terms:Unit .
         ?unit terms:credit ?credit .
-        ?unit terms:code ?code .
-        ?unit terms:title ?title .
+        ?unit terms:unitCode ?code .
+        ?unit terms:unitTitle ?title .
         FILTER (?credit = "12")
     }
 """
@@ -312,9 +312,9 @@ q9 = f"""
     SELECT ?code ?title
     WHERE {{
         ?major rdf:type terms:Major .
-        ?major terms:units unit:{user_input} .
-        ?major terms:code ?code .
-        ?major terms:title ?title .
+        ?major terms:containsUnit unit:{user_input} .
+        ?major terms:majorCode ?code .
+        ?major terms:majorTitle ?title .
     }}
 """
 # for row in g.query(q9):
@@ -331,9 +331,9 @@ q10 = f"""
     SELECT ?code ?title
     WHERE {{
         ?unit rdf:type terms:Unit .
-        ?unit terms:delivery_mode ?mode .
-        ?unit terms:code ?code .
-        ?unit terms:title ?title .
+        ?unit terms:unitDelivery ?mode .
+        ?unit terms:unitCode ?code .
+        ?unit terms:unitTitle ?title .
         FILTER (?mode = "{user_input}")
     }}
 """
