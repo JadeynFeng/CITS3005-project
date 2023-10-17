@@ -1,4 +1,4 @@
-from rdflib import Graph, Literal, Namespace, RDF, URIRef
+from rdflib import Graph, Literal, Namespace, RDF, XSD
 import json
 
 # Create a new RDF graph
@@ -29,9 +29,9 @@ for unit_code, unit_data in units_data.items():
     g.add((unit_uri, TERMS.school, Literal(unit_data["school"])))
     g.add((unit_uri, TERMS.board_of_examiners, Literal(unit_data["board_of_examiners"])))
     g.add((unit_uri, TERMS.delivery_mode, Literal(unit_data["delivery_mode"])))
-    g.add((unit_uri, TERMS.level, Literal(unit_data["level"])))
+    g.add((unit_uri, TERMS.level, Literal(unit_data["level"], datatype=XSD.integer)))
     g.add((unit_uri, TERMS.description, Literal(unit_data["description"])))
-    g.add((unit_uri, TERMS.credit, Literal(unit_data["credit"])))
+    g.add((unit_uri, TERMS.credit, Literal(unit_data["credit"], datatype=XSD.integer)))
     
     for assessment in unit_data["assessment"]:
         g.add((unit_uri, TERMS.assessment, Literal(assessment)))
@@ -50,28 +50,24 @@ for unit_code, unit_data in units_data.items():
     if "prerequisites_text" in unit_data:
         g.add((unit_uri, TERMS.prerequisites_text, Literal(unit_data["prerequisites_text"])))
 
-    if "advisable_prior_study" in unit_data:
-        for prior_study in unit_data["advisable_prior_study"]:
-            g.add((unit_uri, TERMS.advisable_prior_study, Literal(prior_study)))
-    
+    totalHours = 0
     if "contact" in unit_data:
-        totalHours = 0
         for contact, hours in unit_data["contact"].items():
             contact_uri = CONTACT[unit_code+"_"+contact.lower().replace(" ", "_")]
             g.add((contact_uri, RDF.type, TERMS.Contact))
             g.add((contact_uri, TERMS.activity, Literal(contact)))
-            g.add((contact_uri, TERMS.hours, Literal(hours)))
+            g.add((contact_uri, TERMS.hours, Literal(hours, datatype=XSD.integer)))
             g.add((unit_uri, TERMS.contact, contact_uri))
             totalHours += int(hours)
-        g.add((unit_uri, TERMS.total_hours, Literal(totalHours)))
+    g.add((unit_uri, TERMS.total_hours, Literal(totalHours, datatype=XSD.integer)))
             
     if "note" in unit_data:
         g.add((unit_uri, TERMS.note, Literal(unit_data["note"])))
 
 # Iterate through the units JSON data to store prerequisites in RDF
 for unit_code, unit_data in units_data.items():
+    unit_uri = UNIT[unit_code]
     if "prerequisites_cnf" in unit_data:
-        unit_uri = UNIT[unit_code]
         counter = 0 
         for prereq_list in unit_data["prerequisites_cnf"]:
             name = unit_code+"andReqs"+str(counter)
@@ -81,7 +77,12 @@ for unit_code, unit_data in units_data.items():
                 g.add((prereq_uri, TERMS.orReqs, UNIT[p]))
             g.add((unit_uri, TERMS.prerequisites_cnf, prereq_uri))
             counter += 1
-
+            
+    if "advisable_prior_study" in unit_data:
+        for prior_study in unit_data["advisable_prior_study"]:
+            prior_uri = UNIT[prior_study]
+            g.add((unit_uri, TERMS.advisable_prior_study, prior_uri))
+    
 # Iterate through the majors JSON data and create RDF triples
 for major_code, major_data in majors_data.items():
     major_uri = MAJOR[major_code]
@@ -105,7 +106,7 @@ for major_code, major_data in majors_data.items():
         g.add((major_uri, TERMS.courses, Literal(course)))
         
     for bridge in major_data["bridging"]:
-        g.add((major_uri, TERMS.bridging, Literal(bridge)))
+        g.add((major_uri, TERMS.bridging, UNIT[bridge]))
         
     for unit in major_data["units"]:
         g.add((major_uri, TERMS.units, UNIT[unit]))
@@ -262,7 +263,7 @@ q6 = f"""
 
 # Query 7 : Find all units with a specific level
 print("Query 7 : Find all units with a specific level")
-user_input = input("Enter a level (1-5): ")
+user_input = input("Enter a level: ")
 q7 = f"""
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
