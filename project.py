@@ -138,9 +138,9 @@ q1 = """
     GROUP BY ?code
     HAVING (COUNT(?outcomes) > 6)
 """
-# for row in g.query(q1):
-#     print(f"- {row.code}, {row.title}, {row.c}")
-# print("-------------------------------------------------------")
+for row in g.query(q1):
+    print(f"- {row.code}, {row.title}, {row.c}")
+print("-------------------------------------------------------")
     
 # Query 2 : Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam
 print("Query 2 : Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam")
@@ -170,9 +170,9 @@ q2 = """
         }
     } 
 """
-# for row in g.query(q2):
-#     print(f"- {row.code}, {row.title}")
-# print("-------------------------------------------------------")
+for row in g.query(q2):
+    print(f"- {row.code}, {row.title}")
+print("-------------------------------------------------------")
 
 # Query 3 : Find all units that appear in more than 3 majors
 print("Query 3 : Find all units that appear in more than 3 majors")
@@ -193,9 +193,9 @@ q3 = """
     GROUP BY ?code
     HAVING (COUNT(?major) > 3)     
 """
-# for row in g.query(q3):
-#     print(f"- {row.code}, {row.title}, {row.m}")
-# print("-------------------------------------------------------")
+for row in g.query(q3):
+    print(f"- {row.code}, {row.title}, {row.m}")
+print("-------------------------------------------------------")
 
 # Query 4 : Basic search functionality in unit's description or outcomes
 print("Query 4 : Basic search functionality in unit's description or outcomes")
@@ -215,9 +215,9 @@ q4 = f"""
         {{ ?unit terms:unitOutcome ?outcome . FILTER(CONTAINS(UCASE(?outcome), UCASE("{user_input}"))) }}
     }}
 """
-# for row in g.query(q4):
-#     print(f"- {row.code}, {row.title}")
-# print("-------------------------------------------------------")
+for row in g.query(q4):
+    print(f"- {row.code}, {row.title}")
+print("-------------------------------------------------------")
 
 # Query 5 : Find all units with a specific major
 print("Query 5 : Find all units with a specific major")
@@ -235,9 +235,9 @@ q5 = f"""
         ?unit terms:unitTitle ?title .
     }}
 """
-# for row in g.query(q5):
-#     print(f"- {row.code}, {row.title}")
-# print("-------------------------------------------------------")
+for row in g.query(q5):
+    print(f"- {row.code}, {row.title}")
+print("-------------------------------------------------------")
 
 # Query 6 : Find all prerequisites for a given unit
 print("Query 6 : Find all prerequisites for a given unit")
@@ -257,9 +257,9 @@ q6 = f"""
         ?prereq_unit terms:unitTitle ?title .
     }}
 """
-# for row in g.query(q6):
-#     print(f"- {row.code}, {row.title}")
-# print("-------------------------------------------------------")
+for row in g.query(q6):
+    print(f"- {row.code}, {row.title}")
+print("-------------------------------------------------------")
 
 # Query 7 : Find all units with a specific level
 print("Query 7 : Find all units with a specific level")
@@ -278,9 +278,9 @@ q7 = f"""
         FILTER (?level = "{user_input}")
     }}
 """
-# for row in g.query(q7):
-#     print(f"- {row.code}, {row.title}")
-# print("-------------------------------------------------------")
+for row in g.query(q7):
+    print(f"- {row.code}, {row.title}")
+print("-------------------------------------------------------")
 
 # Query 8 : Find units with 12 credit points
 print("Query 8 : Find units with 12 credit points")
@@ -297,9 +297,9 @@ q8 = """
         FILTER (?credit = "12")
     }
 """
-# for row in g.query(q8):
-#     print(f"- {row.code}, {row.title}")
-# print("-------------------------------------------------------")
+for row in g.query(q8):
+    print(f"- {row.code}, {row.title}")
+print("-------------------------------------------------------")
 
 # Query 9 : Find all majors that require a specific unit
 print("Query 9 : Find all majors that require a specific unit")
@@ -317,9 +317,9 @@ q9 = f"""
         ?major terms:majorTitle ?title .
     }}
 """
-# for row in g.query(q9):
-#     print(f"- {row.code}, {row.title}")
-# print("-------------------------------------------------------")
+for row in g.query(q9):
+    print(f"- {row.code}, {row.title}")
+print("-------------------------------------------------------")
 
 # Query 10 : Find units with a specific delivery mode
 print("Query 10 : Find units with a specific delivery mode (Face to face, Online, Both)")
@@ -337,9 +337,9 @@ q10 = f"""
         FILTER (?mode = "{user_input}")
     }}
 """
-# for row in g.query(q10):
-#     print(f"- {row.code}, {row.title}")
-# print("-------------------------------------------------------")
+for row in g.query(q10):
+    print(f"- {row.code}, {row.title}")
+print("-------------------------------------------------------")
 
 
 # Query 11: Find units with school in Molecular Sciences and is 6 credit points. 
@@ -357,9 +357,9 @@ q11 = """
         ?unit terms:credit "6" . 
     }
 """
-# for row in g.query(q11):
-#     print(f"- {row.code}, {row.title}")
-# print("-------------------------------------------------------")
+for row in g.query(q11):
+    print(f"- {row.code}, {row.title}")
+print("-------------------------------------------------------")
 
 # Query 12 : Find all Molecular Sciences units that do not have BIOC2002 as a prerequisite
 print("Query 12 : Find all Molecular Sciences units that do not have BIOC2002 as a prerequisite")
