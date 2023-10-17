@@ -1,6 +1,6 @@
 from owlready2 import *
 onto_path.append(".")
-onto = get_ontology("http://uwabookofknowledge.org/ontology.owl#")
+onto = get_ontology("/project.rdf").load()
 
 with onto:
     # Define classes
