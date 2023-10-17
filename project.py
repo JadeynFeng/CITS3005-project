@@ -275,7 +275,7 @@ q7 = f"""
         ?unit terms:level ?level .
         ?unit terms:unitCode ?code .
         ?unit terms:unitTitle ?title .
-        FILTER (?level = "{int(user_input)}")
+        FILTER (?level = {int(user_input)})
     }}
 """
 for row in g.query(q7):

@@ -1,50 +1,50 @@
 # Knowledge Graph Overview
 ## Schema
 ### Namespaces
-- `UNIT` namespace for representing educational units (http://uwabookofknowledge.org/unit/)
+- `UNIT` namespace for representing units (http://uwabookofknowledge.org/unit/)
 - `MAJOR` namespace for representing majors (http://uwabookofknowledge.org/major/)
 - `TERMS` namespace for various terms and properties (http://uwabookofknowledge.org/terms/)
+- `PREREQ` namespace for representing prerequisites CNF (http://uwabookofknowledge.org/prereq/)
+- `CONTACT` namespace for representing contact activities (http://uwabookofknowledge.org/contact/)
 
 ### Units Schema
-| RDF Property                   | Description                                         | Example Value                                    |
-|--------------------------------|-----------------------------------------------------|--------------------------------------------------|
-| `UNIT:<unit_code>`             | URI representing the unit                           | UNIT:AGRI5403                                    |
-| `RDF.type`                     | Type of the resource (always `TERMS.Unit`)          | TERMS.Unit                                       |
-| `TERMS.code`                   | Unit code                                           | "AGRI5403"                                       |
-| `TERMS.title`                  | Unit title                                          | "Advanced Commodity Marketing"                   |
-| `TERMS.school`                 | School offering the unit                            | "Agriculture and Environment"                    |
-| `TERMS.board_of_examiners`     | Board of examiners for the unit                     | "05 - Agriculture, Environmental and Related S"  |
-| `TERMS.delivery_mode`          | Delivery mode of the unit                           | "Face to face"                                   |
-| `TERMS.level`                  | Level of the unit                                   | "3"                                              |
-| `TERMS.description`            | Description of the unit                             | "This is a course on..."                         |
-| `TERMS.credit`                 | Credit hours for the unit                           | "6"                                              |
-| `TERMS.assessment`             | Assessment methods for the unit                     | "Quizzes, Assignments"                           |
-| `TERMS.offering`               | Offering information for the unit (optional)        | "..."                                            |
-| `TERMS.majors`                 | Majors associated with the unit (optional)          | "Agribusiness"                                   |
-| `TERMS.outcomes`               | Learning outcomes of the unit (optional)            | "Demonstrate an understanding..."                |
-| `TERMS.prerequisites_text`     | Prerequisites in text format (optional)             | "Successful completion of..."                    |
-| `TERMS.prerequisites_cnf`      | Prerequisites in Conjunctive Normal Form (optional) | "ACCT5432 AND ECON5541"                          |
-| `TERMS.advisable_prior_study`  | Advisable prior study (optional)                    | "AGRI5402"                                       |
-| `TERMS.contact`                | Contact hours information (optional)                | "Lectures: 6 hours..."                           |
-| `TERMS.note`                   | Additional notes about the unit (optional)          | "..."                                            |
+| RDF Property                | Description                                    | Example Value                                    |
+|-----------------------------|------------------------------------------------|--------------------------------------------------|
+| `UNIT:<unit_code>`          | URI representing the unit                      | UNIT:AGRI5403                                    |
+| `RDF.type`                  | Type of the resource (always `TERMS.Unit`)     | TERMS.Unit                                       |
+| `TERMS.unitCode`            | Unit code                                      | "AGRI5403"                                       |
+| `TERMS.unitTitle`           | Unit title                                     | "Advanced Commodity Marketing"                   |
+| `TERMS.unitSchool`          | School offering the unit                       | "Agriculture and Environment"                    |
+| `TERMS.unitBoard`           | Board of examiners for the unit                | "05 - Agriculture, Environmental and Related S"  |
+| `TERMS.unitDelivery`        | Delivery mode of the unit                      | "Face to face"                                   |
+| `TERMS.level`               | Level of the unit                              | "3"                                              |
+| `TERMS.unitDescription`     | Description of the unit                        | "6"                                              |
+| `TERMS.assessment`          | Assessment methods for the unit                | "Quizzes, Assignments"                           |
+| `TERMS.isPartOfMajor`       | Majors associated with the unit (optional)     | "Agribusiness"                                   |
+| `TERMS.unitOutcome`         | Learning outcomes of the unit (optional)       | "Demonstrate an understanding..."                |
+| `TERMS.unitText`            | Prerequisites in text format (optional)        | "Successful completion of..."                    |
+| `TERMS.prerequisitesCNF`    | Prerequisites in CNF `TERMS.AndReq` (optional) | "ACCT5432 AND ECON5541"                          |
+| `TERMS.advisablePriorStudy` | Advisable prior study (optional)               | "AGRI5402"                                       |
+| `TERMS.contact`             | Contact activity `TERMS.Contact` (optional)    | "Lectures: 6 hours..."                           |
+| `TERMS.note`                | Additional notes about the unit (optional)     | "..."                                            |
 
 ### Majors Schema
 
-| RDF Property                   | Description                                         | Example Value                                    |
-|--------------------------------|-----------------------------------------------------|--------------------------------------------------|
-| `MAJOR:<major_code>`           | URI representing the major                          | MAJOR:MJD-AGBUS                                  |
-| `RDF.type`                     | Type of the resource (always `TERMS.Major`)         | TERMS.Major                                      |
-| `TERMS.code`                   | Major code                                          | "MJD-AGBUS"                                      |
-| `TERMS.title`                  | Major title                                         | "Agribusiness"                                   |
-| `TERMS.school`                 | School offering the major                           | "Agriculture and Environment"                    |
-| `TERMS.board_of_examiners`     | Board of examiners for the major                    | "05 - Agriculture, Environmental and Related S"  |
-| `TERMS.delivery_mode`          | Delivery mode of the major                          | "Face to face"                                   |
-| `TERMS.description`            | Description of the major                            | "Agribusiness refers to..."                      |
-| `TERMS.outcomes`               | Learning outcomes of the major                      | "Demonstrate capacity to..."                     |
-| `TERMS.prerequisites`          | Prerequisites for the major (optional)              | "Mathematics Methods ATAR or..."                 |
-| `TERMS.courses`                | List of courses required for the major              | "BP004, BH005"                                   |
-| `TERMS.bridging`               | Bridging courses for the major (optional)           | "MATH1720, SCIE1500"                             |
-| `TERMS.units`                  | List of units associated with the major             | "ACCT1100, AGRI1001, ..."                        |
+| RDF Property             | Description                                          | Example Value                                    |
+|--------------------------|------------------------------------------------------|--------------------------------------------------|
+| `MAJOR:<major_code>`     | URI representing the major                           | MAJOR:MJD-AGBUS                                  |
+| `RDF.type`               | Type of the resource (always `TERMS.Major`)          | TERMS.Major                                      |
+| `TERMS.majorCode`        | Major code                                           | "MJD-AGBUS"                                      |
+| `TERMS.majorTitle`       | Major title                                          | "Agribusiness"                                   |
+| `TERMS.majorSchool`      | School offering the major                            | "Agriculture and Environment"                    |
+| `TERMS.majorBoard`       | Board of examiners for the major                     | "05 - Agriculture, Environmental and Related S"  |
+| `TERMS.majorDelivery`    | Delivery mode of the major                           | "Face to face"                                   |
+| `TERMS.majorDescription` | Description of the major                             | "Agribusiness refers to..."                      |
+| `TERMS.majorOutcome`     | Learning outcomes of the major                       | "Demonstrate capacity to..."                     |
+| `TERMS.majorText`        | Prerequisites text for the major (optional)          | "Mathematics Methods ATAR or..."                 |
+| `TERMS.course`           | Course codes which requiresthe major                 | "BP004, BH005"                                   |
+| `TERMS.bridging`         | Bridging units for the major `TERMS.Unit` (optional) | "MATH1720, SCIE1500"                             |
+| `TERMS.containsUnit`     | Core units for the major `TERMS.Unit`                | "ACCT1100, AGRI1001, ..."                        |
 
 ## Constraints
 
@@ -60,6 +60,24 @@
 ### 3. Contact Hours Constraint
 - No major should require more than 40 contact hours per week
 - Limits the total contact hours (e.g., lecture hours, lab hours) per week for any major to be no more than 40 hours
+
+### 4. Unit Properties Constraint
+- This constraint specifies the required properties for a unit
+- A unit can only have ONE unit code, title, school, board of examiners, delivery mode, level, description, credit points, and total contact hours
+- A unit can have MULTIPLE assessment methods, majors, learning outcomes, prerequisites, advisable prior study, and notes
+
+### 5. Major Properties Constraint
+- This constraint specifies the required properties for a major
+- A major can only have ONE major code, title, school, board of examiners, delivery mode, and description
+- A major can have MULTIPLE learning outcomes, courses, bridging units, 
+and core units
+
+### 6. Contact Properties Constraint
+- This constraint specifies the required properties for a contact activity
+- A contact activity can only have ONE activity type and its contact hours
+
+### 7. Prerequisite Properties Constraint
+- This constraint specifies the required properties for a prerequisite CNF for a unit
 
 ## Executing Constraints Validation
 
