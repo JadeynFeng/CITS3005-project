@@ -94,7 +94,7 @@ for major_code, major_data in majors_data.items():
     g.add((major_uri, TERMS.majorSchool, Literal(major_data["school"])))
     g.add((major_uri, TERMS.majorBoard, Literal(major_data["board_of_examiners"])))
     g.add((major_uri, TERMS.majorDelivery, Literal(major_data["delivery_mode"])))
-    g.add((major_uri, TERMS.najorDescription, Literal(major_data["description"])))
+    g.add((major_uri, TERMS.majorDescription, Literal(major_data["description"])))
     
     for outcome in major_data["outcomes"]:
         g.add((major_uri, TERMS.majorOutcome, Literal(outcome)))

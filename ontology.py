@@ -5,99 +5,170 @@ onto = get_ontology("/project.rdf").load()
 with onto:
     # Define classes
     class Unit(Thing): pass
-    class UnitCode(Unit): pass
-    class UnitTitle(Unit): pass
 
     class Major(Thing): pass
-    class MajorCode(Major): pass
-    class MajorTitle(Major): pass
 
     class Prerequisite(Thing): pass
-    class OrReq(Prerequisite): pass
 
-    class Outcome(Thing): pass
-    class Assessment(Thing): pass
     class Contact(Thing): pass
 
     # Define object properties
-    class has_unitcode(ObjectProperty, FunctionalProperty): 
+    class unitCode(DataProperty, FunctionalProperty): 
         domain = [Unit]
-        range = [UnitCode]
+        range = [str]
     
-    class has_unittitle(ObjectProperty, FunctionalProperty): 
+    class unitTitle(DataProperty, FunctionalProperty): 
         domain = [Unit]
-        range = [UnitTitle]
+        range = [str]
 
-    class has_unitlevel(DataProperty): 
+    class unitSchool(DataProperty): 
+        domain = [Unit]
+        range = [str]
+
+    class unitBoard(DataProperty): 
+        domain = [Unit]
+        range = [str]
+
+    class unitDelivery(DataProperty): 
+        domain = [Unit]
+        range = [str]
+            
+    class level(DataProperty): 
         domain = [Unit]
         range = [int]
-        
-    class has_prerequisite(DataProperty):
+
+    class unitDescription(DataProperty): 
+        domain = [Unit]
+        range = [str]
+    
+    class credit(DataProperty): 
+        domain = [Unit]
+        range = [int]
+
+    class assessment(DataProperty): 
+        domain = [Unit]
+        range = [str]
+
+    class prerequisitesCNF(DataProperty):
         domain = [Unit]
         range = [Prerequisite]
         
-    class has_prerequisite_text(ObjectProperty):
+    class orReq(DataProperty):
+        domain = [Prerequisite]
+        range = [Unit]
+
+    class isPartOfMajor(DataProperty): 
+            domain = [Unit]
+            range = [str]
+
+    class unitOutcome(DataProperty):
+            domain = [Unit]
+            range = [str]
+
+    class unitText(DataProperty):
         domain = [Unit]
         range = [str]
         
-    class has_outcome(ObjectProperty):
+    class contact(ObjectProperty):
         domain = [Unit]
-        range = [Outcome]
-
-    class has_assessment(ObjectProperty):
-        domain = [Unit]
-        range = [Assessment]
+        range = [Contact]
     
-    class is_part_of_major(ObjectProperty): 
+    class activity(DataProperty):
+        domain = [Contact]
+        range = [str]
+
+    class hours(DataProperty):
+        domain = [Contact]
+        range = [int]   
+
+    class note(DataProperty):
         domain = [Unit]
-        range = [Major]
-            
-    class has_majorcode(ObjectProperty, FunctionalProperty): 
-        domain = [Major]
-        range = [MajorCode]
+        range = [str]
 
-    class has_majortitle(ObjectProperty, FunctionalProperty): 
-        domain = [Major]
-        range = [MajorTitle]
+    class advisablePriorStudy(ObjectProperty):
+        domain = [Unit]
+        range = [Unit]
 
-    class contains_unit(ObjectProperty): 
+
+
+    class majorCode(DataProperty, FunctionalProperty): 
+        domain = [Major]
+        range = [str]
+
+    class majorTitle(DataProperty, FunctionalProperty): 
+        domain = [Major]
+        range = [str]
+
+    class majorSchool(DataProperty): 
+        domain = [Major]
+        range = [str]
+
+    class majorBoard(DataProperty): 
+        domain = [Major]
+        range = [str]
+
+    class majorDelivery(DataProperty): 
+        domain = [Major]
+        range = [str]
+
+    class majorDescription(DataProperty): 
+        domain = [Major]
+        range = [str]
+
+    class majorOutcome(DataProperty): 
+        domain = [Major]
+        range = [str]
+    
+    class majorText(DataProperty): 
+        domain = [Major]
+        range = [str]
+
+    class course(DataProperty): 
+        domain = [Major]
+        range = [str]
+
+    class bridging(ObjectProperty): 
         domain = [Major]
         range = [Unit]
-        inverse_property = is_part_of_major
-        
-    # Define rules
-    class PrerequisiteOfPrerequisite(Prerequisite >> Prerequisite, FunctionalProperty):
-        pass
-    class OutcomeOfCoreUnit(Outcome >> Major, FunctionalProperty):
-        pass
-    # class PrerequisiteTextOfCoreUnit(Prerequisite >> str, FunctionalProperty):
-    #     pass
 
-    # Add data to Knowledge Graph
-    # Add Unit
-    new_unit = Unit("CITS1111")
-    new_unit.has_unitcode = UnitCode("CITS1111")
-    new_unit.has_unittitle = UnitTitle("Artificial Intelligence")
-    new_unit.has_unitlevel.append(1)
-    new_unit.has_outcome.append(Outcome("Learn about AI"))
-    new_unit.has_assessment.append(Assessment("Exams"))
+    class containsUnit(ObjectProperty): 
+        domain = [Major]
+        range = [Unit]
+        # inverse_property = is_part_of_major
+        
+    # # Define rules
+    # class PrerequisiteOfPrerequisite(Prerequisite >> Prerequisite, FunctionalProperty):
+    #     pass
+    # class OutcomeOfCoreUnit(Outcome >> Major, FunctionalProperty):
+    #     pass
+    # # class PrerequisiteTextOfCoreUnit(Prerequisite >> str, FunctionalProperty):
+    # #     pass
+
+    # # Add data to Knowledge Graph
+    # # Add Unit
+    # new_unit = Unit("CITS1111")
+    # new_unit.has_unitcode = UnitCode("CITS1111")
+    # new_unit.has_unittitle = UnitTitle("Artificial Intelligence")
+    # new_unit.has_unitlevel.append(1)
+    # new_unit.has_outcome.append(Outcome("Learn about AI"))
+    # new_unit.has_assessment.append(Assessment("Exams"))
     
-    # Add Major
-    major = Major("CS")
-    major.has_majorcode = MajorCode("CS")
-    major.has_majortitle = MajorTitle("Computer Science")
-    major.contains_unit.append(new_unit)
-    new_unit.is_part_of_major.append(major)
+    # # Add Major
+    # major = Major("CS")
+    # major.has_majorcode = MajorCode("CS")
+    # major.has_majortitle = MajorTitle("Computer Science")
+    # major.contains_unit.append(new_unit)
+    # new_unit.is_part_of_major.append(major)
     
-    # Update data in Knowledge Graph
-    update_unit = onto.search_one(iri = "*CITS1111")
-    update_unit.has_unitlevel.append(3)
-    update_unit.has_outcome.append(Outcome("Learn about AI and ML"))
-    update_unit.has_assessment.append(Assessment("Exams and assignments"))
+    # # Update data in Knowledge Graph
+    # update_unit = onto.search_one(iri = "*CITS1111")
+    # update_unit.has_unitlevel.append(3)
+    # update_unit.has_outcome.append(Outcome("Learn about AI and ML"))
+    # update_unit.has_assessment.append(Assessment("Exams and assignments"))
     
-    # Delete data from Knowledge Graph
-    delete_unit = onto.search_one(iri = "*CITS1111")
-    destroy_entity(delete_unit)
+    # # Delete data from Knowledge Graph
+    # delete_unit = onto.search_one(iri = "*CITS1111")
+    # destroy_entity(delete_unit)
 
 onto.load()
 sync_reasoner()
