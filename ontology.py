@@ -1,8 +1,15 @@
 from owlready2 import *
-import rdflib 
+from rdflib import Graph, Literal, Namespace, RDF, XSD
+
+UNIT = Namespace("http://uwabookofknowledge.org/unit/")
+MAJOR = Namespace("http://uwabookofknowledge.org/major/")
+TERMS = Namespace("http://uwabookofknowledge.org/terms/")
+PREREQ = Namespace("http://uwabookofknowledge.org/prereq/")
+CONTACT = Namespace("http://uwabookofknowledge.org/contact/")
 
 # Load the knowledge graph for UWA handbook
-handbook = rdflib.Graph()
+handbook = Graph()
+handbook.parse('project.rdf', format='xml')
 
 onto_path.append(".")
 onto = get_ontology("http://uwabookofknowledge.org/ontology.owl#")
@@ -59,7 +66,6 @@ with onto:
         domain = [Prerequisite]
         range = [Unit]
    
-    # Define data properties for Major entity
     class isPartOfMajor(DataProperty): 
         domain = [Unit]
         range = [str]
@@ -149,44 +155,56 @@ with onto:
     rule3 = Imp()
     rule3.set_as_rule("""containsUnit(?u) ^ Major(?m) ^ unitText(?u, ?t) -> majorText(?m, ?t)""")
   
-    # Add Unit
-    # new_unit = Unit("CITS1111")
-    # new_unit.unitCode = "CITS1111"
-    # new_unit.unitTitle = "Programming Fundamentals"
-    # new_unit.unitSchool.append("Computer Science and Software Engineering")
-    # new_unit.unitBoard.append("School of Computer Science and Software Engineering")
-    # new_unit.unitDelivery.append("Crawley")
-    # new_unit.level.append(1)
-    # new_unit.unitDescription.append("This unit introduces the fundamental concepts.")
-    # new_unit.credit.append(6)
-    # new_unit.assessment.append("Examination (60%), Labs (40%)")
-    # new_unit.isPartOfMajor.append("Computer Science")
-
-
-
-from rdflib import Graph, Literal, Namespace, RDF, XSD
-
-UNIT = Namespace("http://uwabookofknowledge.org/unit/")
-MAJOR = Namespace("http://uwabookofknowledge.org/major/")
-TERMS = Namespace("http://uwabookofknowledge.org/terms/")
-PREREQ = Namespace("http://uwabookofknowledge.org/prereq/")
-CONTACT = Namespace("http://uwabookofknowledge.org/contact/")
-
-handbook = Graph()
-handbook.parse('project.rdf', format='xml')
-
-
-for subj in handbook.subjects(RDF.type, TERMS.Unit, unique=True):
-    new_unit = Unit()
-    for pred, obj in handbook.predicate_objects(subj):
-        if pred == TERMS.unitCode:
-            new_unit.unitCode.append()
+    for subj in handbook.subjects(RDF.type, TERMS.Unit, unique=True):
+        current_code = str(subj).split('/')[-1]
+        new_unit = Unit(current_code)
+        for pred, obj in handbook.predicate_objects(subj):
+            if pred == TERMS.unitCode:
+                new_unit.unitCode = obj.value
+            elif pred == TERMS.unitTitle:
+                new_unit.unitTitle = obj.value
+            elif pred == TERMS.unitSchool:
+                new_unit.unitSchool.append(obj.value)
+            elif pred == TERMS.unitBoard:
+                new_unit.unitBoard.append(obj.value)
+            elif pred == TERMS.unitDelivery:
+                new_unit.unitDelivery.append(obj.value)
+            elif pred == TERMS.level:
+                new_unit.level.append(obj.value)
+            elif pred == TERMS.unitDescription:
+                new_unit.unitDescription.append(obj.value)
+            elif pred == TERMS.credit:
+                new_unit.credit.append(obj.value)
+            elif pred == TERMS.assessment:
+                new_unit.assessment.append(obj.value)
+            # elif pred == TERMS.prerequisitesCNF:
+            #     new_unit.prerequisitesCNF.append(obj.value)
+            # elif pred == TERMS.orReq:
+            #     new_unit.orReq.append(obj.value)
+            elif pred == TERMS.isPartOfMajor:
+                new_unit.isPartOfMajor.append(obj.value)
+            elif pred == TERMS.unitOutcome:
+                new_unit.unitOutcome.append(obj.value)
+            elif pred == TERMS.unitText:
+                new_unit.unitText.append(obj.value)
+            elif pred == TERMS.contact:
+                print(obj)
+                new_unit.contact.append(obj.value)
+            elif pred == TERMS.activity:
+                new_unit.activity.append(obj.value)
+            elif pred == TERMS.hours:
+                new_unit.hours.append(obj.value)
+            elif pred == TERMS.note:
+                new_unit.note.append(obj.value)
+            # elif pred == TERMS.advisablePriorStudy:
+            #     new_unit.advisablePriorStudy.append(obj.value)
 
 # for subj, pred, obj in handbook: 
     # if (subj, pred, obj) not in handbook:
     #     raise Exception("RDF graph 'http://uwabookofknowledge.org' is empty. ")
 
 
+# sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
 
 onto.save(file = "ontology.owl", format = "rdfxml")
 

@@ -93,7 +93,14 @@ and core units
 # Executing Queries
 
 1. Run `python3 project.py` to start the script to load the data into RDFLib and execute some SPARQL queries
-2. There will be prompts for user input to execute specific queries
+2. The script will prompt you for user input to execute specific SPARQL queries.
+- You will be presented with a list of queries to choose from.
+- Enter the corresponding number to execute a query.
+- Follow the on-screen instructions for providing any required input to complete the query.
+3. The script will execute the selected query and display the results.
+4. To exit the script, enter 0 when prompted.
+
+Note: The script maintains a log of queries and their results in a text file called 'query_results.txt'.
 
 ## Queries List
 ### 1. Find all units with more than 6 outcomes
