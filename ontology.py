@@ -58,11 +58,11 @@ with onto:
         domain = [Unit]
         range = [str]
 
-    class prerequisitesCNF(DataProperty):
+    class prerequisitesCNF(ObjectProperty):
         domain = [Unit]
         range = [Prerequisite]
         
-    class orReq(DataProperty):
+    class orReq(ObjectProperty):
         domain = [Prerequisite]
         range = [Unit]
    
@@ -200,10 +200,10 @@ with onto:
         current_prereqCNF = str(subj).split('/')[-1]
         current_orReq = str(obj).split('/')[-1]
         if (onto[current_orReq] in allunits):
-            onto[current_prereqCNF].advisablePriorStudy.append(onto[current_orReq])
+            onto[current_prereqCNF].orReq.append(onto[current_orReq])
         else:
             new_unit = Unit(current_orReq)
-            onto[current_prereqCNF].advisablePriorStudy.append(onto[current_orReq])
+            onto[current_prereqCNF].orReq.append(onto[current_orReq])
 
     for subj, obj in handbook.subject_objects(TERMS.advisablePriorStudy):
         current_code = str(subj).split('/')[-1]
@@ -256,7 +256,7 @@ with onto:
     rule3 = Imp()
     rule3.set_as_rule("Major(?m) ^ containsUnit(?m, ?u) ^ unitText(?u, ?t) -> majorText(?m, ?t)")
 
-# sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
+sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
 onto.save(file = "ontology.owl", format = "rdfxml")
 
 with onto:
