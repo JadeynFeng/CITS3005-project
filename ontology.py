@@ -260,88 +260,152 @@ with onto:
 sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
 onto.save(file = "ontology.owl", format = "rdfxml")
 
-print("1. Add a new unit")
+allunits = Unit.instances()
+print("1. Add a new unit\n2. Add a new major\n0. Exit")
 action = input("Select an action number: ")
 if (action == "1"):
-    value = input("Unit Code: ")
-    new_unit = Unit(value)
-    new_unit.unitCode = value
-    value = input("Unit Title: ")
-    new_unit.unitTitle = value
-    value = input("Unit School: ")
-    new_unit.unitSchool = value
-    value = input("Unit Board of Examiners: ")
-    new_unit.unitBoard = value
+    code = input("Unit Code: ")
+    new_unit = Unit(code)
+    new_unit.unitCode = code
+    new_unit.unitTitle = input("Unit Title: ")
+    new_unit.unitSchool = input("Unit School: ")
+    new_unit.unitBoard = input("Unit Board of Examiners: ")
     value = input("Unit Delivery Mode (Face to face/Online/Both/None): ")
     if value != "None": 
         new_unit.unitDelivery = value
     else: 
         new_unit.unitDelivery = ""
-    value = input("Unit Level: ")
-    new_unit.level = value
-    value = input("Unit Description: ")
-    new_unit.unitDescription = value
-    value = input("Unit Credit: ")
-    new_unit.credit = value
-    value = input("Unit Assessment (split by commas): ")
+    new_unit.level = input("Unit Level: ")
+    new_unit.unitDescription = input("Unit Description: ")
+    new_unit.credit = input("Unit Credit: ")
+
+    while True:
+        user_input = input("Unit Assessment (leave blank to finish): ")
+        if user_input:
+            new_unit.assessment.append(user_input)
+        else:
+            break
+
+    value = input('Prerequisite CNF (eg. [ACCT5432],[ECON5541,ECON3300] ): ')
     v = value.split(",")
-    for i in v:
-        new_unit.assessment.append(i)
-    value = input('Prerequisite CNF (eg. ["ACCT5432"],["ECON5541","ECON3300"] ): ')
-    v = value.split(",")
-    for i in v:
-        new_unit.assessment.append(i)
-
-
-        current_CNF = str(obj).split('/')[-1]
-        new_prereq = Prerequisite(current_CNF)
-        new_unit.prerequisitesCNF.append(new_prereq)
-    elif pred == TERMS.isPartOfMajor:
-        new_unit.isPartOfMajor.append(obj.value)
-    elif pred == TERMS.unitOutcome:
-        new_unit.unitOutcome.append(obj.value)
-    elif pred == TERMS.unitText:
-        new_unit.unitText.append(obj.value)
-    elif pred == TERMS.contact:
-        current_contact = str(obj).split('/')[-1]
-        new_unit.contact.append(onto[current_contact])
-    elif pred == TERMS.note:
-        new_unit.note.append(obj.value)
-
+    counter = 0 
     
+    for i in v:
+        formatted = code+"andReq"+str(counter)
+        new_prereq = Prerequisite(formatted)
+        counter += 1
+        new_unit.prerequisitesCNF.append(new_prereq)
+        inner = i[1:-1].split(",")
+        for j in inner: 
+            if onto[j] in allunits:
+                new_prereq.orReq.append(onto[j])
+            else:
+                req = Unit(j)
+                new_prereq.orReq.append(req)
+
+    while True:
+        value = input('List all majors this unit is part of (leave blank to finish): ')
+        if value:
+            new_unit.isPartOfMajor.append(value)
+        else:
+            break  
+
+    while True:
+        outcome = input("Unit Outcome (leave blank to finish): ")
+        if outcome:
+            new_unit.unitOutcome.append(outcome)
+        else:
+            break        
+    
+    new_unit.unitText.append(input("Required Text: "))
+
+    new_unit.note.append(input("Note (optional): "))
+    
+    coounter = 0 
+    while True: 
+        s = input("provide a contact type and hour (eg lecture-6) (leave blank to finish): ")
+        if s: 
+            name = code+"contact"+str(counter)
+            counter  += 1 
+            new_contact = Contact(name)
+            new_unit.contact.append(new_contact)
+            a = s.split("-")
+            new_contact.activity = a[0] 
+            new_contact.hours = int(a[1])
+        else:
+            break
+
+if (action == "2"):
+    code_value = input("Major Code: ")
+    new_major = Major(code_value)
+    new_major.majorCode = code_value
+    new_major.majorTitle = input("Major Title: ")
+    new_major.majorSchool = input("Major School: ")
+    new_major.majorBoard = input("Major Board: ")
+    new_major.majorDelivery = input("Major Delivery: ")
+    new_major.majorDescription = input("Major Description: ")
+    new_major.majorText.append(input("Required Text: "))
+
+    while True:
+        user_input = input("Major Outcome (leave blank to finish): ")
+        if user_input:
+            new_major.majorOutcome.append(user_input)
+        else:
+            break
+        
+    while True:
+        user_input = input("Course (leave blank to finish): ")
+        if user_input:
+            new_major.course.append(user_input)
+        else:
+            break
+        
+    while True:
+        user_input = input("Bridging Unit (leave blank to finish): ")
+        if user_input:
+            if onto[user_input] in allunits:
+                new_major.bridging.append(onto[user_input])
+            else:
+                print(f"Unit with ID {user_input} not found in the ontology.")
+        else:
+            break
+
+    while True:
+        user_input = input("Core Unit (leave blank to finish): ")
+        if user_input:
+            if onto[user_input] in allunits:
+                new_major.containsUnit.append(onto[user_input])
+            else:
+                print(f"Unit with ID {user_input} not found in the ontology.")
+        else:
+            break
+
+
+# # Demonstration of SWRL rules applied onto Ontology
 # with onto:
+#     print("\nDemonstration of SWRL rules applied onto Ontology")
+#     print("\n==========================================================================")
+#     print("SWRL rule 1: A prerequisite of a prerequisite is a prerequisite")
 #     for unit in onto.Unit.instances():
 #         if unit.unitCode == "GEOG3310":
-#                 for p in unit.prerequisitesCNF:
-#                     print(p)
-#                     for o in p.orReq:
-#                         print("\t-", o.unitCode)
-#     print("total:", len(onto.Unit.instances()))
-# Demonstration of SWRL rules applied onto Ontology
-with onto:
-    print("\nDemonstration of SWRL rules applied onto Ontology")
-    print("\n==========================================================================")
-    print("SWRL rule 1: A prerequisite of a prerequisite is a prerequisite")
-    for unit in onto.Unit.instances():
-        if unit.unitCode == "GEOG3310":
-            for group in unit.prerequisitesCNF:
-                for prereq in group.orReq:
-                    print(f"{group} Group has {prereq.unitCode}")
-    print("GEOG3310 has 1 prerequisite (GEOG2202) which has 4 prerequisites (GEOG1107, GEOG1106, GEOG1104, GEOG1103)")
+#             for group in unit.prerequisitesCNF:
+#                 for prereq in group.orReq:
+#                     print(f"{group} Group has {prereq.unitCode}")
+#     print("GEOG3310 has 1 prerequisite (GEOG2202) which has 4 prerequisites (GEOG1107, GEOG1106, GEOG1104, GEOG1103)")
     
-    print("\n==========================================================================")
-    print("SWRL rule 2: An outcome of a core unit is an outcome of a major")
-    for major in onto.Major.instances():
-        if len(major.majorOutcome) < 30:
-            print(f"- {major.majorCode} has {len(major.majorOutcome)} outcomes")
-    print("MJD-GRMNA major has 4 outcomes, but its core units have 23 distinct outcomes, which gives a total of 27 outcomes")
-    print("MJD-GRMNI major has 4 outcomes, but its core units have 25 distinct outcomes, which gives a total of 29 outcomes")
+#     print("\n==========================================================================")
+#     print("SWRL rule 2: An outcome of a core unit is an outcome of a major")
+#     for major in onto.Major.instances():
+#         if len(major.majorOutcome) < 30:
+#             print(f"- {major.majorCode} has {len(major.majorOutcome)} outcomes")
+#     print("MJD-GRMNA major has 4 outcomes, but its core units have 23 distinct outcomes, which gives a total of 27 outcomes")
+#     print("MJD-GRMNI major has 4 outcomes, but its core units have 25 distinct outcomes, which gives a total of 29 outcomes")
             
-    print("\n==========================================================================")
-    print("SWRL rule 3: A required text of a core unit is a required text for a major")
-    for major in onto.Major.instances():
-        if len(major.majorText) == 3:
-            print(f"- {major.majorCode} has {len(major.majorText)} required texts")
-    print("MJD-PSYCH, MJD-ANTHR, and MJD-PSYDM majors has 1 required text, but its core units have 2 distinct required texts, which gives a total of 3 required texts")
+#     print("\n==========================================================================")
+#     print("SWRL rule 3: A required text of a core unit is a required text for a major")
+#     for major in onto.Major.instances():
+#         if len(major.majorText) == 3:
+#             print(f"- {major.majorCode} has {len(major.majorText)} required texts")
+#     print("MJD-PSYCH, MJD-ANTHR, and MJD-PSYDM majors has 1 required text, but its core units have 2 distinct required texts, which gives a total of 3 required texts")
     
     
