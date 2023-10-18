@@ -30,27 +30,27 @@ with onto:
         domain = [Unit]
         range = [str]
 
-    class unitSchool(DataProperty): 
+    class unitSchool(DataProperty, FunctionalProperty): 
         domain = [Unit]
         range = [str]
 
-    class unitBoard(DataProperty): 
+    class unitBoard(DataProperty, FunctionalProperty): 
         domain = [Unit]
         range = [str]
 
-    class unitDelivery(DataProperty): 
+    class unitDelivery(DataProperty, FunctionalProperty): 
         domain = [Unit]
         range = [str]
             
-    class level(DataProperty): 
+    class level(DataProperty, FunctionalProperty): 
         domain = [Unit]
         range = [int]
 
-    class unitDescription(DataProperty): 
+    class unitDescription(DataProperty, FunctionalProperty): 
         domain = [Unit]
         range = [str]
     
-    class credit(DataProperty): 
+    class credit(DataProperty, FunctionalProperty): 
         domain = [Unit]
         range = [int]
 
@@ -91,11 +91,11 @@ with onto:
         range = [Unit]
         
     # Define data properties for Contact entity
-    class activity(DataProperty):
+    class activity(DataProperty, FunctionalProperty):
         domain = [Contact]
         range = [str]
 
-    class hours(DataProperty):
+    class hours(DataProperty, FunctionalProperty):
         domain = [Contact]
         range = [int] 
 
@@ -108,19 +108,19 @@ with onto:
         domain = [Major]
         range = [str]
 
-    class majorSchool(DataProperty): 
+    class majorSchool(DataProperty, FunctionalProperty): 
         domain = [Major]
         range = [str]
 
-    class majorBoard(DataProperty): 
+    class majorBoard(DataProperty, FunctionalProperty): 
         domain = [Major]
         range = [str]
 
-    class majorDelivery(DataProperty): 
+    class majorDelivery(DataProperty, FunctionalProperty): 
         domain = [Major]
         range = [str]
 
-    class majorDescription(DataProperty): 
+    class majorDescription(DataProperty, FunctionalProperty): 
         domain = [Major]
         range = [str]
 
@@ -151,9 +151,9 @@ with onto:
         new_contact = Contact(current_code)
         for pred, obj in handbook.predicate_objects(subj):
             if pred == TERMS.activity:
-                new_contact.activity.append(obj.value)
+                new_contact.activity = obj.value
             elif pred == TERMS.hours:
-                new_contact.hours.append(obj.value)
+                new_contact.hours = obj.value
 
     # Load Unit Entities
     for subj in handbook.subjects(RDF.type, TERMS.Unit, unique=True):
@@ -165,17 +165,17 @@ with onto:
             elif pred == TERMS.unitTitle:
                 new_unit.unitTitle = obj.value
             elif pred == TERMS.unitSchool:
-                new_unit.unitSchool.append(obj.value)
+                new_unit.unitSchool = obj.value
             elif pred == TERMS.unitBoard:
-                new_unit.unitBoard.append(obj.value)
+                new_unit.unitBoard = obj.value
             elif pred == TERMS.unitDelivery:
-                new_unit.unitDelivery.append(obj.value)
+                new_unit.unitDelivery = obj.value
             elif pred == TERMS.level:
-                new_unit.level.append(obj.value)
+                new_unit.level = obj.value
             elif pred == TERMS.unitDescription:
-                new_unit.unitDescription.append(obj.value)
+                new_unit.unitDescription = obj.value
             elif pred == TERMS.credit:
-                new_unit.credit.append(obj.value)
+                new_unit.credit = obj.value
             elif pred == TERMS.assessment:
                 new_unit.assessment.append(obj.value)
             elif pred == TERMS.prerequisitesCNF:
@@ -225,13 +225,13 @@ with onto:
             elif pred == TERMS.majorTitle:
                 new_major.majorTitle = obj.value
             elif pred == TERMS.majorSchool:
-                new_major.majorSchool.append(obj.value)
+                new_major.majorSchool = obj.value
             elif pred == TERMS.majorBoard:
-                new_major.majorBoard.append(obj.value)
+                new_major.majorBoard = obj.value
             elif pred == TERMS.majorDelivery:
-                new_major.majorDelivery.append(obj.value)
+                new_major.majorDelivery = obj.value
             elif pred == TERMS.majorDescription:
-                new_major.majorDescription.append(obj.value)
+                new_major.majorDescription = obj.value
             elif pred == TERMS.majorOutcome:
                 new_major.majorOutcome.append(obj.value)
             elif pred == TERMS.majorText:
@@ -260,7 +260,55 @@ with onto:
 sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
 onto.save(file = "ontology.owl", format = "rdfxml")
 
+print("1. Add a new unit")
+action = input("Select an action number: ")
+if (action == "1"):
+    value = input("Unit Code: ")
+    new_unit = Unit(value)
+    new_unit.unitCode = value
+    value = input("Unit Title: ")
+    new_unit.unitTitle = value
+    value = input("Unit School: ")
+    new_unit.unitSchool = value
+    value = input("Unit Board of Examiners: ")
+    new_unit.unitBoard = value
+    value = input("Unit Delivery Mode (Face to face/Online/Both/None): ")
+    if value != "None": 
+        new_unit.unitDelivery = value
+    else: 
+        new_unit.unitDelivery = ""
+    value = input("Unit Level: ")
+    new_unit.level = value
+    value = input("Unit Description: ")
+    new_unit.unitDescription = value
+    value = input("Unit Credit: ")
+    new_unit.credit = value
+    value = input("Unit Assessment (split by commas): ")
+    v = value.split(",")
+    for i in v:
+        new_unit.assessment.append(i)
+    value = input('Prerequisite CNF (eg. ["ACCT5432"],["ECON5541","ECON3300"] ): ')
+    v = value.split(",")
+    for i in v:
+        new_unit.assessment.append(i)
 
+
+        current_CNF = str(obj).split('/')[-1]
+        new_prereq = Prerequisite(current_CNF)
+        new_unit.prerequisitesCNF.append(new_prereq)
+    elif pred == TERMS.isPartOfMajor:
+        new_unit.isPartOfMajor.append(obj.value)
+    elif pred == TERMS.unitOutcome:
+        new_unit.unitOutcome.append(obj.value)
+    elif pred == TERMS.unitText:
+        new_unit.unitText.append(obj.value)
+    elif pred == TERMS.contact:
+        current_contact = str(obj).split('/')[-1]
+        new_unit.contact.append(onto[current_contact])
+    elif pred == TERMS.note:
+        new_unit.note.append(obj.value)
+
+    
 # with onto:
 #     for unit in onto.Unit.instances():
 #         if unit.unitCode == "GEOG3310":
