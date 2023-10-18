@@ -1,5 +1,5 @@
 from owlready2 import *
-from rdflib import Graph, Literal, Namespace, RDF, XSD
+from rdflib import Graph, Namespace, RDF
 
 UNIT = Namespace("http://uwabookofknowledge.org/unit/")
 MAJOR = Namespace("http://uwabookofknowledge.org/major/")
@@ -142,18 +142,6 @@ with onto:
     class containsUnit(ObjectProperty): 
         domain = [Major]
         range = [Unit]
-        
-    # SWRL rule 1: A prerequisite of a prerequisite is a prerequisite
-    rule1 = Imp()
-    rule1.set_as_rule("""Unit(?a) ^ Unit(?b) ^ Prerequisite(?p) ^ prerequisitesCNF(?a, ?p) ^ orReq(?p, ?b) ^ prerequisitesCNF(?b, ?q) -> prerequisitesCNF(?a, ?q)""")
-    
-    # SWRL rule 2: An outcome of a core unit is an outcome of a major
-    rule2 = Imp()
-    rule2.set_as_rule("""containsUnit(?u) ^ Major(?m) ^ unitOutcome(?u, ?o) -> majorOutcome(?m, ?o)""")
-    
-    # SWRL rule 3: A required text of a core unit is a required text for a major
-    rule3 = Imp()
-    rule3.set_as_rule("""containsUnit(?u) ^ Major(?m) ^ unitText(?u, ?t) -> majorText(?m, ?t)""")
     
     for subj in handbook.subjects(RDF.type, TERMS.Contact, unique=True):
         current_code = str(subj).split('/')[-1]
@@ -223,8 +211,9 @@ with onto:
         if (onto[current_advisablePriorStudy] in allunits):
             onto[current_code].advisablePriorStudy.append(onto[current_advisablePriorStudy])
         else:
-            new_unit = Unit(current_advisablePriorStudy)
-            onto[current_code].advisablePriorStudy.append(onto[current_advisablePriorStudy])
+            if len(current_advisablePriorStudy) == 8: # if it is a unit code
+                new_unit = Unit(current_advisablePriorStudy)
+                onto[current_code].advisablePriorStudy.append(onto[current_advisablePriorStudy])
 
     for subj in handbook.subjects(RDF.type, TERMS.Major, unique=True):
         current_code = str(subj).split('/')[-1]
@@ -254,27 +243,35 @@ with onto:
             elif pred == TERMS.containsUnit:
                 unit = str(obj).split('/')[-1]
                 new_major.containsUnit.append(onto[unit])
+                
+    # SWRL rule 1: A prerequisite of a prerequisite is a prerequisite
+    # rule1 = Imp()
+    # rule1.set_as_rule("Unit(?a) ^ prerequisitesCNF(?a, ?p) ^ orReq(?p, ?b) ^ prerequisitesCNF(?b, ?q) -> prerequisitesCNF(?a, ?q)")
+    
+    # SWRL rule 2: An outcome of a core unit is an outcome of a major
+    rule2 = Imp()
+    rule2.set_as_rule("Major(?m) ^ containsUnit(?m, ?u) ^ unitOutcome(?u, ?o) -> majorOutcome(?m, ?o)")
+    
+    # SWRL rule 3: A required text of a core unit is a required text for a major
+    rule3 = Imp()
+    rule3.set_as_rule("Major(?m) ^ containsUnit(?m, ?u) ^ unitText(?u, ?t) -> majorText(?m, ?t)")
 
-# sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
-
+sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
 onto.save(file = "ontology.owl", format = "rdfxml")
 
-
-# # Load ontology with data from knowledge graph
-# handbook.parse("ontology.owl", format="xml")
-# handbook.parse("project.rdf", format="xml")
-
-# query = """
-# SELECT ?code ?title
-# WHERE {
-#     ?unit rdf:type terms:Unit .
-#     ?unit terms:level ?level .
-#     ?unit terms:unitCode ?code .
-#     ?unit terms:unitTitle ?title .
-#     FILTER (?level = 9)
-# }
-# """
-
-# for row in handbook.query(query):
-#     print(f"- {row.code}, {row.title}")
-# print("-------------------------------------------------------")
+with onto:
+    for unit in onto.Unit.instances():
+        if unit.unitCode is None:
+            print(unit)
+        else:
+            print(f"{unit.unitCode}")
+        
+    print("total:", len(onto.Unit.instances()))
+    
+    # count = 0
+    # for major in onto.Major.instances():
+    #     if len(major.majorOutcome) < 30:
+    #         print(f"{major.majorCode} has {len(major.majorOutcome)} outcomes")
+    #         count += 1
+    # print("count:", count, "\ntotal:", len(onto.Major.instances()))
+    
