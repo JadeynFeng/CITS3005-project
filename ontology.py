@@ -186,10 +186,10 @@ with onto:
                 new_unit.credit.append(obj.value)
             elif pred == TERMS.assessment:
                 new_unit.assessment.append(obj.value)
-            # elif pred == TERMS.prerequisitesCNF:
-            #     new_unit.prerequisitesCNF.append(obj.value)
-            # elif pred == TERMS.orReq:
-            #     new_unit.orReq.append(obj.value)
+            elif pred == TERMS.prerequisitesCNF:
+                current_prerequisitesCNF = str(obj).split('/')[-1]
+                new_prerequisites = Prerequisite(current_prerequisitesCNF)
+                new_unit.contact.append(onto[current_prerequisitesCNF])
             elif pred == TERMS.isPartOfMajor:
                 new_unit.isPartOfMajor.append(obj.value)
             elif pred == TERMS.unitOutcome:
@@ -205,8 +205,26 @@ with onto:
                 new_unit.hours.append(obj.value)
             elif pred == TERMS.note:
                 new_unit.note.append(obj.value)
-            # elif pred == TERMS.advisablePriorStudy:
-            #     new_unit.advisablePriorStudy.append(obj.value)
+
+    allunits = Unit.instances()
+
+    for subj, obj in handbook.subject_objects(TERMS.orReq):
+        current_prereqCNF = str(subj).split('/')[-1]
+        current_orReq = str(obj).split('/')[-1]
+        if (onto[current_orReq] in allunits):
+            onto[current_prereqCNF].advisablePriorStudy.append(onto[current_orReq])
+        else:
+            new_unit = Unit(current_orReq)
+            onto[current_code].advisablePriorStudy.append(onto[current_orReq])
+
+    for subj, obj in handbook.subject_objects(TERMS.advisablePriorStudy):
+        current_code = str(subj).split('/')[-1]
+        current_advisablePriorStudy = str(obj).split('/')[-1]
+        if (onto[current_advisablePriorStudy] in allunits):
+            onto[current_code].advisablePriorStudy.append(onto[current_advisablePriorStudy])
+        else:
+            new_unit = Unit(current_advisablePriorStudy)
+            onto[current_code].advisablePriorStudy.append(onto[current_advisablePriorStudy])
 
     for subj in handbook.subjects(RDF.type, TERMS.Major, unique=True):
         current_code = str(subj).split('/')[-1]
