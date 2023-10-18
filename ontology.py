@@ -61,12 +61,12 @@ with onto:
    
     # Define data properties for Major entity
     class isPartOfMajor(DataProperty): 
-            domain = [Unit]
-            range = [str]
+        domain = [Unit]
+        range = [str]
 
     class unitOutcome(DataProperty):
-            domain = [Unit]
-            range = [str]
+        domain = [Unit]
+        range = [str]
 
     class unitText(DataProperty):
         domain = [Unit]
@@ -139,15 +139,15 @@ with onto:
         
     # SWRL rule 1: A prerequisite of a prerequisite is a prerequisite
     rule1 = Imp()
-    rule1.set_as_rule("Unit(?a), Unit(?b), Prerequisite(?p), prerequisitesCNF(?a, ?p), orReq(?p, ?b), prerequisitesCNF(?b, ?q) -> prerequisitesCNF(?a, q?)")
+    rule1.set_as_rule("""Unit(?a) ^ Unit(?b) ^ Prerequisite(?p) ^ prerequisitesCNF(?a, ?p) ^ orReq(?p, ?b) ^ prerequisitesCNF(?b, ?q) -> prerequisitesCNF(?a, ?q)""")
     
     # SWRL rule 2: An outcome of a core unit is an outcome of a major
     rule2 = Imp()
-    rule2.set_as_rule("Unit(?u) ^ Major(?m) ^ unitOutcome(?u, ?o) -> majorOutcome(?m, ?o)")
+    rule2.set_as_rule("""Unit(?u) ^ Major(?m) ^ unitOutcome(?u, ?o) -> majorOutcome(?m, ?o)""")
     
     # SWRL rule 3: A required text of a core unit is a required text for a major
     rule3 = Imp()
-    rule3.set_as_rule("Unit(?u) ^ Major(?m) ^ unitText(?u, ?t) -> majorText(?m, ?t)")
+    rule3.set_as_rule("""Unit(?u) ^ Major(?m) ^ unitText(?u, ?t) -> majorText(?m, ?t)""")
   
     # Add Unit
     # new_unit = Unit("CITS1111")
