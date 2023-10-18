@@ -86,6 +86,9 @@ and core units
 
 ## Ontology Rules
 
+1. A prerequisite of a prerequisite is a prerequisite.
+2. An outcome of a core unit is an outcome of a major.
+3. A required text of a core unit is a required text for a major.
 
 # Executing Queries
 

@@ -143,11 +143,11 @@ with onto:
     
     # SWRL rule 2: An outcome of a core unit is an outcome of a major
     rule2 = Imp()
-    rule2.set_as_rule("""Unit(?u) ^ Major(?m) ^ unitOutcome(?u, ?o) -> majorOutcome(?m, ?o)""")
+    rule2.set_as_rule("""containsUnit(?u) ^ Major(?m) ^ unitOutcome(?u, ?o) -> majorOutcome(?m, ?o)""")
     
     # SWRL rule 3: A required text of a core unit is a required text for a major
     rule3 = Imp()
-    rule3.set_as_rule("""Unit(?u) ^ Major(?m) ^ unitText(?u, ?t) -> majorText(?m, ?t)""")
+    rule3.set_as_rule("""containsUnit(?u) ^ Major(?m) ^ unitText(?u, ?t) -> majorText(?m, ?t)""")
   
     # Add Unit
     # new_unit = Unit("CITS1111")

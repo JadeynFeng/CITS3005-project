@@ -348,50 +348,58 @@ query_prompt = [
 
 query_string = [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12]
 
-while True:
-    print("\n========================== QUERIES ==========================")
-    print("Select a query to run:\n")
-    for i, query in enumerate(query_prompt):
-        print(f"{i+1}.\t{query}")
-    print("0.\tExit\n")
+with open("query_results.txt", "w") as file:
+    while True:
+        file.write("========================== QUERY RESULTS ==========================\n")
+        print("\n========================== QUERIES ==========================")
+        print("Select a query to run:\n")
+        for i, query in enumerate(query_prompt):
+            print(f"{i+1}.\t{query}")
+        print("0.\tExit\n")
 
-    user_choice = input("Enter a number: ")
-    
-    if user_choice == "0":
-        break
-    elif user_choice.isdigit() and 1 <= int(user_choice) <= len(query_string):
-        query_index = int(user_choice) - 1
-        query = query_string[query_index]
-
-        # Execute the selected query
-
-        if query_index == 3:
-            user_input = input("Enter a search query: ")
-            query = query.replace("{user_input}", user_input)
-        elif query_index == 4:
-            user_input = input("Enter a major code: ")
-            query = query.replace("{user_input}", user_input)
-        elif query_index == 5 or query_index == 8:
-            user_input = input("Enter a unit code: ")
-            query = query.replace("{user_input}", user_input)
-        elif query_index == 6:
-            user_input = input("Enter a level: ")
-            query = query.replace("{user_input}", user_input)
-        elif query_index == 9:
-            user_input = input("Enter a delivery mode ('Face to face', 'Online', 'Both'): ").capitalize()
-            query = query.replace("{user_input}", user_input)
+        user_choice = input("Enter a number: ")
         
-        print(f"\n========================== QUERY {user_choice} ==========================")
-        print(query_prompt[query_index])
-        query_results = g.query(query)
-        if len(query_results) == 0:
-            print("\tNo results found.")
-        else:
-            for row in query_results:
-                print(f"\t- {row.code}, {row.title}")
+        if user_choice == "0":
+            break
+        elif user_choice.isdigit() and 1 <= int(user_choice) <= len(query_string):
+            query_index = int(user_choice) - 1
+            query = query_string[query_index]
 
-        input("\nPress Enter to continue...")
-    else:
-        print("Invalid choice. Please enter a valid query number or 0 to exit.")
+            # Execute the selected query
+
+            if query_index == 3:
+                user_input = input("Enter a search query: ")
+                query = query.replace("{user_input}", user_input)
+            elif query_index == 4:
+                user_input = input("Enter a major code: ")
+                query = query.replace("{user_input}", user_input)
+            elif query_index == 5 or query_index == 8:
+                user_input = input("Enter a unit code: ")
+                query = query.replace("{user_input}", user_input)
+            elif query_index == 6:
+                user_input = input("Enter a level: ")
+                query = query.replace("{user_input}", user_input)
+            elif query_index == 9:
+                user_input = input("Enter a delivery mode ('Face to face', 'Online', 'Both'): ").capitalize()
+                query = query.replace("{user_input}", user_input)
+            
+            print(f"\n========================== QUERY {user_choice} ==========================")
+            print(query_prompt[query_index])
+            query_results = g.query(query)
+            if len(query_results) == 0:
+                result_text = "\tNo results found."
+            else:
+                if query_index == 2:
+                    result_text = "\n".join([f"\t- {row.code}, {row.title}, Number of Majors: {row.m}" for row in query_results])
+                result_text = "\n".join([f"\t- {row.code}, {row.title}" for row in query_results])
+            print(result_text)
+
+            file.write(f"Query {user_choice} - {query_prompt[query_index]}\n")
+            file.write(result_text)
+            file.write("\n\n")
+
+            input("\nPress Enter to continue...")
+        else:
+            print("Invalid choice. Please enter a valid query number or 0 to exit.")
     
 print("Exiting...")
