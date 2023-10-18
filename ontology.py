@@ -162,6 +162,32 @@ with onto:
     # new_unit.assessment.append("Examination (60%), Labs (40%)")
     # new_unit.isPartOfMajor.append("Computer Science")
 
+
+
+from rdflib import Graph, Literal, Namespace, RDF, XSD
+
+UNIT = Namespace("http://uwabookofknowledge.org/unit/")
+MAJOR = Namespace("http://uwabookofknowledge.org/major/")
+TERMS = Namespace("http://uwabookofknowledge.org/terms/")
+PREREQ = Namespace("http://uwabookofknowledge.org/prereq/")
+CONTACT = Namespace("http://uwabookofknowledge.org/contact/")
+
+handbook = Graph()
+handbook.parse('project.rdf', format='xml')
+
+
+for subj in handbook.subjects(RDF.type, TERMS.Unit, unique=True):
+    new_unit = Unit()
+    for pred, obj in handbook.predicate_objects(subj):
+        if pred == TERMS.unitCode:
+            new_unit.unitCode.append()
+
+# for subj, pred, obj in handbook: 
+    # if (subj, pred, obj) not in handbook:
+    #     raise Exception("RDF graph 'http://uwabookofknowledge.org' is empty. ")
+
+
+
 onto.save(file = "ontology.owl", format = "rdfxml")
 
 
