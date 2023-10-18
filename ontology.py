@@ -154,7 +154,16 @@ with onto:
     # SWRL rule 3: A required text of a core unit is a required text for a major
     rule3 = Imp()
     rule3.set_as_rule("""containsUnit(?u) ^ Major(?m) ^ unitText(?u, ?t) -> majorText(?m, ?t)""")
-  
+    
+    for subj in handbook.subjects(RDF.type, TERMS.Contact, unique=True):
+        current_code = str(subj).split('/')[-1]
+        new_contact = Contact(current_code)
+        for pred, obj in handbook.predicate_objects(subj):
+            if pred == TERMS.activity:
+                new_contact.activity.append(obj.value)
+            elif pred == TERMS.hours:
+                new_contact.hours.append(obj.value)
+
     for subj in handbook.subjects(RDF.type, TERMS.Unit, unique=True):
         current_code = str(subj).split('/')[-1]
         new_unit = Unit(current_code)
@@ -188,8 +197,8 @@ with onto:
             elif pred == TERMS.unitText:
                 new_unit.unitText.append(obj.value)
             elif pred == TERMS.contact:
-                print(obj)
-                new_unit.contact.append(obj.value)
+                current_contact = str(obj).split('/')[-1]
+                new_unit.contact.append(onto[current_contact])
             elif pred == TERMS.activity:
                 new_unit.activity.append(obj.value)
             elif pred == TERMS.hours:
@@ -199,10 +208,34 @@ with onto:
             # elif pred == TERMS.advisablePriorStudy:
             #     new_unit.advisablePriorStudy.append(obj.value)
 
-# for subj, pred, obj in handbook: 
-    # if (subj, pred, obj) not in handbook:
-    #     raise Exception("RDF graph 'http://uwabookofknowledge.org' is empty. ")
-
+    for subj in handbook.subjects(RDF.type, TERMS.Major, unique=True):
+        current_code = str(subj).split('/')[-1]
+        new_major = Major(current_code)
+        for pred, obj in handbook.predicate_objects(subj):
+            if pred == TERMS.majorCode:
+                new_major.majorCode = obj.value
+            elif pred == TERMS.majorTitle:
+                new_major.majorTitle = obj.value
+            elif pred == TERMS.majorSchool:
+                new_major.majorSchool.append(obj.value)
+            elif pred == TERMS.majorBoard:
+                new_major.majorBoard.append(obj.value)
+            elif pred == TERMS.majorDelivery:
+                new_major.majorDelivery.append(obj.value)
+            elif pred == TERMS.majorDescription:
+                new_major.majorDescription.append(obj.value)
+            elif pred == TERMS.majorOutcome:
+                new_major.majorOutcome.append(obj.value)
+            elif pred == TERMS.majorText:
+                new_major.majorText.append(obj.value)
+            elif pred == TERMS.course:
+                new_major.course.append(obj.value)
+            elif pred == TERMS.bridging:
+                unit = str(obj).split('/')[-1]
+                new_major.bridging.append(onto[unit])
+            elif pred == TERMS.containsUnit:
+                unit = str(obj).split('/')[-1]
+                new_major.containsUnit.append(onto[unit])
 
 # sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
 
