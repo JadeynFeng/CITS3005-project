@@ -20,8 +20,8 @@ if conforms:
 else:
     print("The knowledge graph does not conform to the constraints.")
     
-result_lines = results_text.split('\n')
-for line in result_lines:
-    if "Results" in line:
-        print(line.strip())
-        break
+# result_lines = results_text.split('\n')
+# for line in result_lines:
+#     if "Results" in line:
+#         print(line.strip())
+#         break

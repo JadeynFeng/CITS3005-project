@@ -80,15 +80,7 @@ with onto:
         
     class contact(ObjectProperty):
         domain = [Unit]
-        range = [Contact]
-    
-    class activity(DataProperty):
-        domain = [Contact]
-        range = [str]
-
-    class hours(DataProperty):
-        domain = [Contact]
-        range = [int]   
+        range = [Contact]  
 
     class note(DataProperty):
         domain = [Unit]
@@ -97,6 +89,15 @@ with onto:
     class advisablePriorStudy(ObjectProperty):
         domain = [Unit]
         range = [Unit]
+        
+    # Define data properties for Contact entity
+    class activity(DataProperty):
+        domain = [Contact]
+        range = [str]
+
+    class hours(DataProperty):
+        domain = [Contact]
+        range = [int] 
 
     # Define object properties for Major entity
     class majorCode(DataProperty, FunctionalProperty): 
@@ -143,6 +144,8 @@ with onto:
         domain = [Major]
         range = [Unit]
     
+    # Load Handbook Knowledge Graph onto Ontology
+    # Load Contact Entities
     for subj in handbook.subjects(RDF.type, TERMS.Contact, unique=True):
         current_code = str(subj).split('/')[-1]
         new_contact = Contact(current_code)
@@ -152,6 +155,7 @@ with onto:
             elif pred == TERMS.hours:
                 new_contact.hours.append(obj.value)
 
+    # Load Unit Entities
     for subj in handbook.subjects(RDF.type, TERMS.Unit, unique=True):
         current_code = str(subj).split('/')[-1]
         new_unit = Unit(current_code)
@@ -175,9 +179,9 @@ with onto:
             elif pred == TERMS.assessment:
                 new_unit.assessment.append(obj.value)
             elif pred == TERMS.prerequisitesCNF:
-                current_prerequisitesCNF = str(obj).split('/')[-1]
-                new_prerequisites = Prerequisite(current_prerequisitesCNF)
-                new_unit.prerequisitesCNF.append(onto[current_prerequisitesCNF])
+                current_CNF = str(obj).split('/')[-1]
+                new_prereq = Prerequisite(current_CNF)
+                new_unit.prerequisitesCNF.append(new_prereq)
             elif pred == TERMS.isPartOfMajor:
                 new_unit.isPartOfMajor.append(obj.value)
             elif pred == TERMS.unitOutcome:
@@ -187,10 +191,6 @@ with onto:
             elif pred == TERMS.contact:
                 current_contact = str(obj).split('/')[-1]
                 new_unit.contact.append(onto[current_contact])
-            elif pred == TERMS.activity:
-                new_unit.activity.append(obj.value)
-            elif pred == TERMS.hours:
-                new_unit.hours.append(obj.value)
             elif pred == TERMS.note:
                 new_unit.note.append(obj.value)
 
@@ -215,6 +215,7 @@ with onto:
                 new_unit = Unit(current_advisablePriorStudy)
                 onto[current_code].advisablePriorStudy.append(onto[current_advisablePriorStudy])
 
+    # Load Major Entities
     for subj in handbook.subjects(RDF.type, TERMS.Major, unique=True):
         current_code = str(subj).split('/')[-1]
         new_major = Major(current_code)
@@ -259,19 +260,20 @@ with onto:
 sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
 onto.save(file = "ontology.owl", format = "rdfxml")
 
-with onto:
-    for unit in onto.Unit.instances():
-        if unit.unitCode is None:
-            print(unit)
-        else:
-            print(f"{unit.unitCode}")
-        
-    print("total:", len(onto.Unit.instances()))
+
+# with onto:
+#     for unit in onto.Unit.instances():
+#         if unit.unitCode == "GEOG3310":
+#                 for p in unit.prerequisitesCNF:
+#                     print(p)
+#                     for o in p.orReq:
+#                         print("\t-", o.unitCode)
+#     print("total:", len(onto.Unit.instances()))
     
-    # count = 0
-    # for major in onto.Major.instances():
-    #     if len(major.majorOutcome) < 30:
-    #         print(f"{major.majorCode} has {len(major.majorOutcome)} outcomes")
-    #         count += 1
-    # print("count:", count, "\ntotal:", len(onto.Major.instances()))
+#     count = 0
+#     for major in onto.Major.instances():
+#         if len(major.majorOutcome) < 30:
+#             print(f"{major.majorCode} has {len(major.majorOutcome)} outcomes")
+#             count += 1
+#     print("count:", count, "\ntotal:", len(onto.Major.instances()))
     

@@ -36,9 +36,6 @@ for unit_code, unit_data in units_data.items():
     for assessment in unit_data["assessment"]:
         g.add((unit_uri, TERMS.assessment, Literal(assessment)))
 
-    # if "offering" in unit_data:
-    #     g.add((unit_uri, TERMS.offering, Literal(unit_data["offering"])))
-
     if "majors" in unit_data:
         for major in unit_data["majors"]:
             g.add((unit_uri, TERMS.isPartOfMajor, Literal(major)))
@@ -368,7 +365,6 @@ with open("query_results.txt", "w") as file:
             query = query_string[query_index]
 
             # Execute the selected query
-
             if query_index == 3:
                 user_input = input("Enter a search query: ")
                 query = query.replace("{user_input}", user_input)
