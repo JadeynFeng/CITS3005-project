@@ -253,184 +253,35 @@ with onto:
     rule3 = Imp()
     rule3.set_as_rule("Major(?m) ^ containsUnit(?m, ?u) ^ unitText(?u, ?t) -> majorText(?m, ?t)")
 
-    
-    
-    while True:
-        print("1. Add a new unit")
-        print("2. Add a new major")
-        print("3. Remove a unit or major")
-        print("0. Exit")
-
-        action = input("Select an action number: ")
-        
-        if action == "0":
-            break
-        
-        # Add a new unit entity
-        elif action == "1":
-            code_value = input("Unit Code: ")
-            new_unit = Unit(code_value)
-            new_unit.unitCode = code_value
-            new_unit.unitTitle = input("Unit Title: ")
-            new_unit.unitSchool = input("Unit School: ")
-            new_unit.unitBoard = input("Unit Board of Examiners: ")
-            user_input = input("Unit Delivery Mode (Face to face/Online/Both/None): ")
-            if user_input != "None": 
-                new_unit.unitDelivery = user_input
-            else: 
-                new_unit.unitDelivery = ""
-            new_unit.level = int(input("Unit Level: "))
-            new_unit.unitDescription = input("Unit Description: ")
-            new_unit.credit = int(input("Unit Credit: "))
-
-            while True:
-                user_input = input("Unit Assessment (leave blank to finish): ")
-                if user_input:
-                    new_unit.assessment.append(user_input)
-                else:
-                    break
-
-            user_input = input('Prerequisite CNF (eg. [ACCT5432]^[ECON5541,ECON3300] ): ')
-            group = user_input.split("^")
-            counter = 0 
-            for g in group:
-                new_prereq = Prerequisite(code_value+"andReqs"+str(counter))
-                counter += 1
-                new_unit.prerequisitesCNF.append(new_prereq)
-                for unit in g[1:-1].split(","): 
-                    if onto[unit] in allunits:
-                        new_prereq.orReq.append(onto[unit])
-                    else:
-                        req = Unit(unit)
-                        new_prereq.orReq.append(req)
-
-            while True:
-                value = input('List all majors this unit is part of (leave blank to finish): ')
-                if value:
-                    new_unit.isPartOfMajor.append(value)
-                else:
-                    break  
-
-            while True:
-                user_input = input("Unit Outcome (leave blank to finish): ")
-                if user_input:
-                    new_unit.unitOutcome.append(user_input)
-                else:
-                    break        
-            
-            new_unit.unitText.append(input("Required Text: "))
-            new_unit.note.append(input("Note (optional): "))
-            
-            counter = 0 
-            while True: 
-                user_input = input("Contact type and hour (eg lecture-6) (leave blank to finish): ")
-                if user_input: 
-                    new_contact = Contact(code_value+"contact"+str(counter))
-                    counter  += 1
-                    new_unit.contact.append(new_contact)
-                    contact_info = user_input.split("-")
-                    new_contact.activity = contact_info[0] 
-                    new_contact.hours = int(contact_info[1])
-                else:
-                    break
-        
-        # Add a new major entity
-        elif action == "2":
-            code_value = input("Major Code: ")
-            new_major = Major(code_value)
-            new_major.majorCode = code_value
-            new_major.majorTitle = input("Major Title: ")
-            new_major.majorSchool = input("Major School: ")
-            new_major.majorBoard = input("Major Board: ")
-            user_input = input("Major Delivery Mode (Face to face/Online/Both/None): ")
-            if user_input != "None": 
-                new_major.majorDelivery = user_input
-            else: 
-                new_major.majorDelivery = ""
-            new_major.majorDescription = input("Major Description: ")
-            new_major.majorText.append(input("Required Text: "))
-
-            while True:
-                user_input = input("Major Outcome (leave blank to finish): ")
-                if user_input:
-                    new_major.majorOutcome.append(user_input)
-                else:
-                    break
-                
-            while True:
-                user_input = input("Course (leave blank to finish): ")
-                if user_input:
-                    new_major.course.append(user_input)
-                else:
-                    break
-                
-            while True:
-                user_input = input("Bridging Unit (leave blank to finish): ")
-                if user_input:
-                    if onto[user_input] in allunits:
-                        new_major.bridging.append(onto[user_input])
-                    else:
-                        print(f"Unit with ID {user_input} not found in the ontology.")
-                else:
-                    break
-
-            while True:
-                user_input = input("Core Unit (leave blank to finish): ")
-                if user_input:
-                    if onto[user_input] in allunits:
-                        new_major.containsUnit.append(onto[user_input])
-                    else:
-                        print(f"Unit with ID {user_input} not found in the ontology.")
-                else:
-                    break
-                
-        # Remove a unit or major entity
-        elif action == "3":
-            user_input = input("Enter unit or major code: ")
-            if onto[user_input] in allunits:
-                for i in onto[user_input].contact:
-                    destroy_entity(i)
-                for i in onto[user_input].prerequisitesCNF:
-                    destroy_entity(i)
-                destroy_entity(onto[user_input])
-                print(f"Successfully removed unit {user_input}.")
-            elif onto[user_input] in Major.instances():
-                destroy_entity(onto[user_input])
-                print(f"Successfully removed major {user_input}.")
-            else:
-                print(f"Unit or major code {user_input} not found in the ontology.")
-        else:
-            print("Invalid action number.")
-
-# sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
+sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
 onto.save(file = "ontology.owl", format = "rdfxml")
 
 
-# # Demonstration of SWRL rules applied onto Ontology
-# with onto:
-#     print("\nDemonstration of SWRL rules applied onto Ontology")
-#     print("\n==========================================================================")
-#     print("SWRL rule 1: A prerequisite of a prerequisite is a prerequisite")
-#     for unit in onto.Unit.instances():
-#         if unit.unitCode == "GEOG3310":
-#             for group in unit.prerequisitesCNF:
-#                 for prereq in group.orReq:
-#                     print(f"{group} Group has {prereq.unitCode}")
-#     print("GEOG3310 has 1 prerequisite (GEOG2202) which has 4 prerequisites (GEOG1107, GEOG1106, GEOG1104, GEOG1103)")
+# Demonstration of SWRL rules applied onto Ontology
+with onto:
+    print("\nDemonstration of SWRL rules applied onto Ontology")
+    print("\n==========================================================================")
+    print("SWRL rule 1: A prerequisite of a prerequisite is a prerequisite")
+    for unit in onto.Unit.instances():
+        if unit.unitCode == "GEOG3310":
+            for group in unit.prerequisitesCNF:
+                for prereq in group.orReq:
+                    print(f"{group} Group has {prereq.unitCode}")
+    print("GEOG3310 has 1 prerequisite (GEOG2202) which has 4 prerequisites (GEOG1107, GEOG1106, GEOG1104, GEOG1103)")
     
-#     print("\n==========================================================================")
-#     print("SWRL rule 2: An outcome of a core unit is an outcome of a major")
-#     for major in onto.Major.instances():
-#         if len(major.majorOutcome) < 30:
-#             print(f"- {major.majorCode} has {len(major.majorOutcome)} outcomes")
-#     print("MJD-GRMNA major has 4 outcomes, but its core units have 23 distinct outcomes, which gives a total of 27 outcomes")
-#     print("MJD-GRMNI major has 4 outcomes, but its core units have 25 distinct outcomes, which gives a total of 29 outcomes")
+    print("\n==========================================================================")
+    print("SWRL rule 2: An outcome of a core unit is an outcome of a major")
+    for major in onto.Major.instances():
+        if len(major.majorOutcome) < 30:
+            print(f"- {major.majorCode} has {len(major.majorOutcome)} outcomes")
+    print("MJD-GRMNA major has 4 outcomes, but its core units have 23 distinct outcomes, which gives a total of 27 outcomes")
+    print("MJD-GRMNI major has 4 outcomes, but its core units have 25 distinct outcomes, which gives a total of 29 outcomes")
             
-#     print("\n==========================================================================")
-#     print("SWRL rule 3: A required text of a core unit is a required text for a major")
-#     for major in onto.Major.instances():
-#         if len(major.majorText) == 3:
-#             print(f"- {major.majorCode} has {len(major.majorText)} required texts")
-#     print("MJD-PSYCH, MJD-ANTHR, and MJD-PSYDM majors has 1 required text, but its core units have 2 distinct required texts, which gives a total of 3 required texts")
+    print("\n==========================================================================")
+    print("SWRL rule 3: A required text of a core unit is a required text for a major")
+    for major in onto.Major.instances():
+        if len(major.majorText) == 3:
+            print(f"- {major.majorCode} has {len(major.majorText)} required texts")
+    print("MJD-PSYCH, MJD-ANTHR, and MJD-PSYDM majors has 1 required text, but its core units have 2 distinct required texts, which gives a total of 3 required texts")
     
     
