@@ -121,9 +121,7 @@ g.bind("contact", CONTACT)
 g.serialize("project.rdf", format="xml")
 
 # QUERIES ===============================================================
-print("======================= QUERIES =======================")
 # Query 1 : Find all units with more than 6 outcomes  
-print("Query 1 : Find all units with more than 6 outcomes")
 q1 = """
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
@@ -138,12 +136,8 @@ q1 = """
     GROUP BY ?code
     HAVING (COUNT(?outcomes) > 6)
 """
-for row in g.query(q1):
-    print(f"- {row.code}, {row.title}, {row.c}")
-print("-------------------------------------------------------")
-    
+
 # Query 2 : Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam
-print("Query 2 : Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam")
 q2 = """
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
@@ -170,12 +164,8 @@ q2 = """
         }
     } 
 """
-for row in g.query(q2):
-    print(f"- {row.code}, {row.title}")
-print("-------------------------------------------------------")
 
 # Query 3 : Find all units that appear in more than 3 majors
-print("Query 3 : Find all units that appear in more than 3 majors")
 q3 = """
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
@@ -193,97 +183,73 @@ q3 = """
     GROUP BY ?code
     HAVING (COUNT(?major) > 3)     
 """
-for row in g.query(q3):
-    print(f"- {row.code}, {row.title}, {row.m}")
-print("-------------------------------------------------------")
 
 # Query 4 : Basic search functionality in unit's description or outcomes
-print("Query 4 : Basic search functionality in unit's description or outcomes")
-user_input = input("Enter a search query: ")
-q4 = f"""
+q4 = """
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
 
     SELECT DISTINCT ?code ?title
-    WHERE {{
+    WHERE {
         ?unit rdf:type terms:Unit .
         ?unit terms:unitCode ?code .
         ?unit terms:unitTitle ?title .
         
-        {{ ?unit terms:unitDescription ?description . FILTER(CONTAINS(UCASE(?description), UCASE("{user_input}"))) }}
+        { ?unit terms:unitDescription ?description . FILTER(CONTAINS(UCASE(?description), UCASE("{user_input}"))) }
         UNION
-        {{ ?unit terms:unitOutcome ?outcome . FILTER(CONTAINS(UCASE(?outcome), UCASE("{user_input}"))) }}
-    }}
+        { ?unit terms:unitOutcome ?outcome . FILTER(CONTAINS(UCASE(?outcome), UCASE("{user_input}"))) }
+    }
 """
-for row in g.query(q4):
-    print(f"- {row.code}, {row.title}")
-print("-------------------------------------------------------")
 
 # Query 5 : Find all units with a specific major
-print("Query 5 : Find all units with a specific major")
-user_input = input("Enter a major code: ")
-q5 = f"""
+q5 = """
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
     PREFIX major: <http://uwabookofknowledge.org/major/>
     
     SELECT ?code ?title
-    WHERE {{
+    WHERE {
         ?major terms:majorCode "{user_input}" .
         ?major terms:containsUnit ?unit .
         ?unit terms:unitCode ?code .
         ?unit terms:unitTitle ?title .
-    }}
+    }
 """
-for row in g.query(q5):
-    print(f"- {row.code}, {row.title}")
-print("-------------------------------------------------------")
 
 # Query 6 : Find all prerequisites for a given unit
-print("Query 6 : Find all prerequisites for a given unit")
-user_input = input("Enter a unit code: ")
-q6 = f"""
+q6 = """
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
     PREFIX major: <http://uwabookofknowledge.org/major/>
     PREFIX prereq: <http://uwabookofknowledge.org/prereq/>
     
     SELECT ?code ?title
-    WHERE {{
+    WHERE {
         unit:{user_input} terms:prerequisitesCNF ?prereq_group .
         ?prereq_group rdf:type terms:AndReq .
         ?prereq_group terms:orReq ?prereq_unit .
         ?prereq_unit terms:unitCode ?code .
         ?prereq_unit terms:unitTitle ?title .
-    }}
+    }
 """
-for row in g.query(q6):
-    print(f"- {row.code}, {row.title}")
-print("-------------------------------------------------------")
 
 # Query 7 : Find all units with a specific level
-print("Query 7 : Find all units with a specific level")
-user_input = input("Enter a level: ")
-q7 = f"""
+q7 = """
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
     PREFIX major: <http://uwabookofknowledge.org/major/>
     
     SELECT ?code ?title
-    WHERE {{
+    WHERE {
         ?unit rdf:type terms:Unit .
         ?unit terms:level ?level .
         ?unit terms:unitCode ?code .
         ?unit terms:unitTitle ?title .
-        FILTER (?level = {int(user_input)})
-    }}
+        FILTER (?level = {user_input})
+    }
 """
-for row in g.query(q7):
-    print(f"- {row.code}, {row.title}")
-print("-------------------------------------------------------")
 
 # Query 8 : Find units with 12 credit points
-print("Query 8 : Find units with 12 credit points")
 q8 = """
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
@@ -297,53 +263,38 @@ q8 = """
         FILTER (?credit = 12)
     }
 """
-for row in g.query(q8):
-    print(f"- {row.code}, {row.title}")
-print("-------------------------------------------------------")
 
 # Query 9 : Find all majors that require a specific unit
-print("Query 9 : Find all majors that require a specific unit")
-user_input = input("Enter a unit code: ")
-q9 = f"""
+q9 = """
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
     PREFIX major: <http://uwabookofknowledge.org/major/>
     
     SELECT ?code ?title
-    WHERE {{
+    WHERE {
         ?major rdf:type terms:Major .
         ?major terms:containsUnit unit:{user_input} .
         ?major terms:majorCode ?code .
         ?major terms:majorTitle ?title .
-    }}
+    }
 """
-for row in g.query(q9):
-    print(f"- {row.code}, {row.title}")
-print("-------------------------------------------------------")
 
 # Query 10 : Find units with a specific delivery mode
-print("Query 10 : Find units with a specific delivery mode (Face to face, Online, Both)")
-user_input = input("Enter a delivery mode ('Face to face', 'Online', 'Both'): ").capitalize()
-q10 = f"""
+q10 = """
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
     
     SELECT ?code ?title
-    WHERE {{
+    WHERE {
         ?unit rdf:type terms:Unit .
         ?unit terms:unitDelivery ?mode .
         ?unit terms:unitCode ?code .
         ?unit terms:unitTitle ?title .
         FILTER (?mode = "{user_input}")
-    }}
+    }
 """
-for row in g.query(q10):
-    print(f"- {row.code}, {row.title}")
-print("-------------------------------------------------------")
-
 
 # Query 11: Find units with school in Molecular Sciences and is 6 credit points. 
-print("Query 11 : Find units with school in Molecular Sciences and is 6 credit points")
 q11 = """
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
@@ -357,12 +308,8 @@ q11 = """
         ?unit terms:credit 6 . 
     }
 """
-for row in g.query(q11):
-    print(f"- {row.code}, {row.title}")
-print("-------------------------------------------------------")
 
 # Query 12 : Find all Molecular Sciences units that do not have BIOC2002 as a prerequisite
-print("Query 12 : Find all Molecular Sciences units that do not have BIOC2002 as a prerequisite")
 q12 = """
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
@@ -383,6 +330,68 @@ q12 = """
         }
     } 
 """
-for row in g.query(q12):
-    print(f"- {row.code}, {row.title}")
-print("-------------------------------------------------------")
+
+query_prompt = [
+    "Find all units with more than 6 outcomes",
+    "Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam",
+    "Find all units that appear in more than 3 majors",
+    "Basic search functionality in unit's description or outcomes",
+    "Find all units with a specific major",
+    "Find all prerequisites for a given unit",
+    "Find all units with a specific level",
+    "Find units with 12 credit points",
+    "Find all majors that require a specific unit",
+    "Find units with a specific delivery mode",
+    "Find units with school in Molecular Sciences and is 6 credit points",
+    "Find all Molecular Sciences units that do not have BIOC2002 as a prerequisite"
+]
+
+query_string = [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12]
+
+while True:
+    print("\n========================== QUERIES ==========================")
+    print("Select a query to run:\n")
+    for i, query in enumerate(query_prompt):
+        print(f"{i+1}.\t{query}")
+    print("0.\tExit\n")
+
+    user_choice = input("Enter a number: ")
+    
+    if user_choice == "0":
+        break
+    elif user_choice.isdigit() and 1 <= int(user_choice) <= len(query_string):
+        query_index = int(user_choice) - 1
+        query = query_string[query_index]
+
+        # Execute the selected query
+
+        if query_index == 3:
+            user_input = input("Enter a search query: ")
+            query = query.replace("{user_input}", user_input)
+        elif query_index == 4:
+            user_input = input("Enter a major code: ")
+            query = query.replace("{user_input}", user_input)
+        elif query_index == 5 or query_index == 8:
+            user_input = input("Enter a unit code: ")
+            query = query.replace("{user_input}", user_input)
+        elif query_index == 6:
+            user_input = input("Enter a level: ")
+            query = query.replace("{user_input}", user_input)
+        elif query_index == 9:
+            user_input = input("Enter a delivery mode ('Face to face', 'Online', 'Both'): ").capitalize()
+            query = query.replace("{user_input}", user_input)
+        
+        print(f"\n========================== QUERY {user_choice} ==========================")
+        print(query_prompt[query_index])
+        query_results = g.query(query)
+        if len(query_results) == 0:
+            print("\tNo results found.")
+        else:
+            for row in query_results:
+                print(f"\t- {row.code}, {row.title}")
+
+        input("\nPress Enter to continue...")
+    else:
+        print("Invalid choice. Please enter a valid query number or 0 to exit.")
+    
+print("Exiting...")
