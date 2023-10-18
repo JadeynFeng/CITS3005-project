@@ -177,7 +177,7 @@ with onto:
             elif pred == TERMS.prerequisitesCNF:
                 current_prerequisitesCNF = str(obj).split('/')[-1]
                 new_prerequisites = Prerequisite(current_prerequisitesCNF)
-                new_unit.contact.append(onto[current_prerequisitesCNF])
+                new_unit.prerequisitesCNF.append(onto[current_prerequisitesCNF])
             elif pred == TERMS.isPartOfMajor:
                 new_unit.isPartOfMajor.append(obj.value)
             elif pred == TERMS.unitOutcome:
@@ -203,7 +203,7 @@ with onto:
             onto[current_prereqCNF].advisablePriorStudy.append(onto[current_orReq])
         else:
             new_unit = Unit(current_orReq)
-            onto[current_code].advisablePriorStudy.append(onto[current_orReq])
+            onto[current_prereqCNF].advisablePriorStudy.append(onto[current_orReq])
 
     for subj, obj in handbook.subject_objects(TERMS.advisablePriorStudy):
         current_code = str(subj).split('/')[-1]
@@ -245,8 +245,8 @@ with onto:
                 new_major.containsUnit.append(onto[unit])
                 
     # SWRL rule 1: A prerequisite of a prerequisite is a prerequisite
-    # rule1 = Imp()
-    # rule1.set_as_rule("Unit(?a) ^ prerequisitesCNF(?a, ?p) ^ orReq(?p, ?b) ^ prerequisitesCNF(?b, ?q) -> prerequisitesCNF(?a, ?q)")
+    rule1 = Imp()
+    rule1.set_as_rule("Unit(?a) ^ prerequisitesCNF(?a, ?p) ^ orReq(?p, ?b) ^ prerequisitesCNF(?b, ?q) -> prerequisitesCNF(?a, ?q)")
     
     # SWRL rule 2: An outcome of a core unit is an outcome of a major
     rule2 = Imp()
@@ -256,7 +256,7 @@ with onto:
     rule3 = Imp()
     rule3.set_as_rule("Major(?m) ^ containsUnit(?m, ?u) ^ unitText(?u, ?t) -> majorText(?m, ?t)")
 
-sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
+# sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
 onto.save(file = "ontology.owl", format = "rdfxml")
 
 with onto:
