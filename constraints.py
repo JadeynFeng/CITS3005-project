@@ -3,7 +3,7 @@ from pyshacl import validate
 
 # Load the knowledge graph for UWA handbook
 handbook = Graph()
-handbook.parse('project.rdf', format='xml')
+handbook.parse('handbook.rdf', format='xml')
 
 # Load the SHACL constraint shapes
 shapes = Graph()
@@ -19,9 +19,3 @@ if conforms:
     print("The knowledge graph conforms to the constraints.")
 else:
     print("The knowledge graph does not conform to the constraints.")
-    
-# result_lines = results_text.split('\n')
-# for line in result_lines:
-#     if "Results" in line:
-#         print(line.strip())
-#         break
