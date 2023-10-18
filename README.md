@@ -18,7 +18,8 @@
 | `TERMS.unitBoard`           | Board of examiners for the unit                | "05 - Agriculture, Environmental and Related S"  |
 | `TERMS.unitDelivery`        | Delivery mode of the unit                      | "Face to face"                                   |
 | `TERMS.level`               | Level of the unit                              | "3"                                              |
-| `TERMS.unitDescription`     | Description of the unit                        | "6"                                              |
+| `TERMS.credit`              | Credit points for completing the unit          | "6"                                              |
+| `TERMS.unitDescription`     | Description of the unit                        | "This is a course on agricultural commodity..."  |
 | `TERMS.assessment`          | Assessment methods for the unit                | "Quizzes, Assignments"                           |
 | `TERMS.isPartOfMajor`       | Majors associated with the unit (optional)     | "Agribusiness"                                   |
 | `TERMS.unitOutcome`         | Learning outcomes of the unit (optional)       | "Demonstrate an understanding..."                |
@@ -45,6 +46,38 @@
 | `TERMS.course`           | Course codes which requiresthe major                 | "BP004, BH005"                                   |
 | `TERMS.bridging`         | Bridging units for the major `TERMS.Unit` (optional) | "MATH1720, SCIE1500"                             |
 | `TERMS.containsUnit`     | Core units for the major `TERMS.Unit`                | "ACCT1100, AGRI1001, ..."                        |
+
+### Contact Schema
+
+| RDF Property             | Description                                   | Example Value              |
+|--------------------------|-----------------------------------------------|----------------------------|
+| `CONTACT:<contact_code>` | URI representing the contact activity         | CONTACT:AGRI5403_contact_0 |
+| `RDF.type`               | Type of the resource (always `TERMS.Contact`) | TERMS.Contact              |
+| `TERMS.activity`         | Contact activity type                         | "Lecture"                  |
+| `TERMS.hours`            | Contact hours for the activity                | "6"                        |
+
+### Prerequisite Schema
+
+| RDF Property             | Description                                   | Example Value              |
+|--------------------------|-----------------------------------------------|----------------------------|
+| `PREREQ:<prereq_code>`   | URI representing the prerequisite CNF         | PREREQ:AGRI5403andReqs0    |
+| `RDF.type`               | Type of the resource (always `TERMS.AndReq`)  | TERMS.AndReq               |
+| `TERMS.orReq`            | Prerequisite unit `TERMS.Unit`                | "ACCT5432"                 |
+
+## Queries List
+
+1. Find all units with more than 6 outcomes
+2. Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam
+3. Find all units that appear in more than 3 majors
+4. Basic search functionality in unit's description or outcomes by inputting a search string
+5. Find all units with a specific major
+6. Find all prerequisites for a given unit
+7. Find all units with a specific level
+8. Find units with 12 credit points
+9. Find all majors that require a specific unit
+10. Find units with a specific delivery mode
+11. Find units with school in Molecular Sciences and is 6 credit points
+12. Find all Molecular Sciences units that do not have BIOC2002 as a prerequisite
 
 ## Constraints
 
@@ -79,67 +112,61 @@ and core units
 ### 7. Prerequisite Properties Constraint
 - This constraint specifies the required properties for a prerequisite CNF for a unit
 
-## Executing Constraints Validation
+## Ontology
 
-1. Run `python3 constraints.py` to start the script to load the shapes graph for running validation
-2. It display the validation results, including any errors or compliance information.
+### Classes
+1. `Unit`: Represents a unit.
+2. `Major`: Represents a major.
+3. `Contact`: Represents a contact activity for a unit.
+4. `Prerequisite`: Represents a prerequisite CNF for a unit.
 
-## Ontology Rules
+### Object Properties
+1. `prerequisitesCNF`: Relates a unit to its prerequisite CNF.
+2. `orReq`: Relates a prerequisite CNF to its prerequisite unit.
+3. `contact`: Relates a unit to its contact activity.
+4. `advisablePriorStudy`: Relates a unit to its advisable prior study.
+5. `containsUnit`: Relates a major to its core units.
+6. `bridging`: Relates a major to its bridging units.
 
+### Data Properties for `Contact`
+- These properties define attributes related to contact activity information.
+- Examples include `activity` and `hours`.
+
+### Data Properties for `Unit`
+- These properties define attributes related to unit information.
+- Examples include `unitCode`, `unitTitle`, `unitSchool`, `unitBoard`, `unitDelivery`, `level`, `unitDescription`, `credit`, `assessment`, `isPartOfMajor`, `unitOutcome`, `unitText`, and `note`.
+
+### Data Properties for `Major`
+- These properties define attributes related to major information.
+- Examples include `majorCode`, `majorTitle`, `majorSchool`, `majorBoard`, `majorDelivery`, `majorDescription`, `majorOutcome`, `majorText`, and `course`.
+
+### SWRL Rules
 1. A prerequisite of a prerequisite is a prerequisite.
 2. An outcome of a core unit is an outcome of a major.
 3. A required text of a core unit is a required text for a major.
 
-# Executing Queries
+# Instructions
+## Executing SPARQL Queries
 
-1. Run `python3 project.py` to start the script to load the data into RDFLib and execute some SPARQL queries
-2. The script will prompt you for user input to execute specific SPARQL queries.
-- You will be presented with a list of queries to choose from.
-- Enter the corresponding number to execute a query.
-- Follow the on-screen instructions for providing any required input to complete the query.
-3. The script will execute the selected query and display the results.
-4. To exit the script, enter 0 when prompted.
+1. Run `python3 handbook.py` to start the script to load the data into RDFLib and execute some SPARQL queries
+2. The script will present you with a list of queries to choose from.
+3. Enter the corresponding number to execute a query.
+4. The script will execute the selected query and display the results.
+5. Press `Enter` to continue to selecting the next query.
+6. To exit the script, enter 0 when prompted.
 
 Note: The script maintains a log of queries and their results in a text file called 'query_results.txt'.
 
-## Queries List
-### 1. Find all units with more than 6 outcomes
-- This query retrieves all units with more than 6 outcomes.
+## Executing SHACL Constraints Validation
 
-### 2. Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam
-- This query identifies level 3 units without exams and ensures that none of their prerequisites have an exam.
+1. Run `python3 constraints.py` to start the script to load the shapes graph for running validation.
+2. It displays the validation results, including any violation information.
 
-### 3. Find all units that appear in more than 3 majors
-- This query locates units that are part of more than 3 majors.
+## Executing OWL Ontology Rules
 
-### 4. Basic search functionality in unit's description or outcomes
-- This query allows you to perform a basic search in unit descriptions or outcomes by inputting a search string.
+1. Run `python3 ontology.py` to start the script to create an OWL ontology, apply SWRL rules to the handbook knowledge graph and saves it to 'ontology.owl'.
+2. It displays information which demonstrate that the rules have been applied.
 
-### 5. Find all units with a specific major
-- This query retrieves all units associated with a specific major using its major code.
-
-### 6. Find all prerequisites for a given unit
-- This query provides a list of prerequisites for a given unit using its unit code.
-
-### 7. Find all units with a specific level
-- This query finds all units at a specific level by inputting a integer.
-
-### 8. Find units with 12 credit points
-- This query locates units that gives 12 credit points on completion.
-
-### 9. Find all majors that require a specific unit
-- This query identifies all majors that require a specific unit, specified by its unit code.
-
-### 10. Find units with a specific delivery mode
-- This query retrieves units based on a specific delivery mode, such as "Face to face," "Online," or "Both."
-
-### 11. Find units with school in Molecular Sciences and is 6 credit points
-- This query finds units in the Molecular Sciences school that are 6 credit points in size.
-
-### 12. Find all Molecular Sciences units that do not have BIOC2002 as a prerequisite
-- This query identifies Molecular Sciences units that do not require BIOC2002 as a prerequisite.
-
-# Instructions
 ## How to add data
 
 ## How to update data
@@ -151,7 +178,3 @@ Note: The script maintains a log of queries and their results in a text file cal
 ## How to update rules
 
 ## How to remove rules
-
-## How to check consistency
-
-## How to identify errors

@@ -9,7 +9,7 @@ CONTACT = Namespace("http://uwabookofknowledge.org/contact/")
 
 # Load the knowledge graph for UWA handbook
 handbook = Graph()
-handbook.parse('project.rdf', format='xml')
+handbook.parse('handbook.rdf', format='xml')
 
 onto_path.append(".")
 onto = get_ontology("http://uwabookofknowledge.org/ontology.owl#")
@@ -260,20 +260,31 @@ with onto:
 sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
 onto.save(file = "ontology.owl", format = "rdfxml")
 
-
-# with onto:
-#     for unit in onto.Unit.instances():
-#         if unit.unitCode == "GEOG3310":
-#                 for p in unit.prerequisitesCNF:
-#                     print(p)
-#                     for o in p.orReq:
-#                         print("\t-", o.unitCode)
-#     print("total:", len(onto.Unit.instances()))
+# Demonstration of SWRL rules applied onto Ontology
+with onto:
+    print("\nDemonstration of SWRL rules applied onto Ontology")
+    print("\n==========================================================================")
+    print("SWRL rule 1: A prerequisite of a prerequisite is a prerequisite")
+    for unit in onto.Unit.instances():
+        if unit.unitCode == "GEOG3310":
+            for group in unit.prerequisitesCNF:
+                for prereq in group.orReq:
+                    print(f"{group} Group has {prereq.unitCode}")
+    print("GEOG3310 has 1 prerequisite (GEOG2202) which has 4 prerequisites (GEOG1107, GEOG1106, GEOG1104, GEOG1103)")
     
-#     count = 0
-#     for major in onto.Major.instances():
-#         if len(major.majorOutcome) < 30:
-#             print(f"{major.majorCode} has {len(major.majorOutcome)} outcomes")
-#             count += 1
-#     print("count:", count, "\ntotal:", len(onto.Major.instances()))
+    print("\n==========================================================================")
+    print("SWRL rule 2: An outcome of a core unit is an outcome of a major")
+    for major in onto.Major.instances():
+        if len(major.majorOutcome) < 30:
+            print(f"- {major.majorCode} has {len(major.majorOutcome)} outcomes")
+    print("MJD-GRMNA major has 4 outcomes, but its core units have 23 distinct outcomes, which gives a total of 27 outcomes")
+    print("MJD-GRMNI major has 4 outcomes, but its core units have 25 distinct outcomes, which gives a total of 29 outcomes")
+            
+    print("\n==========================================================================")
+    print("SWRL rule 3: A required text of a core unit is a required text for a major")
+    for major in onto.Major.instances():
+        if len(major.majorText) == 3:
+            print(f"- {major.majorCode} has {len(major.majorText)} required texts")
+    print("MJD-PSYCH, MJD-ANTHR, and MJD-PSYDM majors has 1 required text, but its core units have 2 distinct required texts, which gives a total of 3 required texts")
+    
     
