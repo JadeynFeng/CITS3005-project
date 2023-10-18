@@ -1,11 +1,7 @@
 from owlready2 import *
 from rdflib import Graph, Namespace, RDF
 
-UNIT = Namespace("http://uwabookofknowledge.org/unit/")
-MAJOR = Namespace("http://uwabookofknowledge.org/major/")
 TERMS = Namespace("http://uwabookofknowledge.org/terms/")
-PREREQ = Namespace("http://uwabookofknowledge.org/prereq/")
-CONTACT = Namespace("http://uwabookofknowledge.org/contact/")
 
 # Load the knowledge graph for UWA handbook
 handbook = Graph()
@@ -257,127 +253,156 @@ with onto:
     rule3 = Imp()
     rule3.set_as_rule("Major(?m) ^ containsUnit(?m, ?u) ^ unitText(?u, ?t) -> majorText(?m, ?t)")
 
-    allunits = Unit.instances()
-    print("1. Add a new unit\n2. Add a new major\n0. Exit")
-    action = input("Select an action number: ")
-    if (action == "1"):
-        code = input("Unit Code: ")
-        new_unit = Unit(code)
-        new_unit.unitCode = code
-        new_unit.unitTitle = input("Unit Title: ")
-        new_unit.unitSchool = input("Unit School: ")
-        new_unit.unitBoard = input("Unit Board of Examiners: ")
-        value = input("Unit Delivery Mode (Face to face/Online/Both/None): ")
-        if value != "None": 
-            new_unit.unitDelivery = value
-        else: 
-            new_unit.unitDelivery = ""
-        new_unit.level = input("Unit Level: ")
-        new_unit.unitDescription = input("Unit Description: ")
-        new_unit.credit = input("Unit Credit: ")
+    
+    
+    while True:
+        print("1. Add a new unit")
+        print("2. Add a new major")
+        print("3. Remove a unit or major")
+        print("0. Exit")
 
-        while True:
-            user_input = input("Unit Assessment (leave blank to finish): ")
-            if user_input:
-                new_unit.assessment.append(user_input)
-            else:
-                break
-
-        value = input('Prerequisite CNF (eg. [ACCT5432],[ECON5541,ECON3300] ): ')
-        v = value.split(",")
-        counter = 0 
+        action = input("Select an action number: ")
         
-        for i in v:
-            formatted = code+"andReq"+str(counter)
-            new_prereq = Prerequisite(formatted)
-            counter += 1
-            new_unit.prerequisitesCNF.append(new_prereq)
-            inner = i[1:-1].split(",")
-            for j in inner: 
-                if onto[j] in allunits:
-                    new_prereq.orReq.append(onto[j])
+        if action == "0":
+            break
+        
+        # Add a new unit entity
+        elif action == "1":
+            code_value = input("Unit Code: ")
+            new_unit = Unit(code_value)
+            new_unit.unitCode = code_value
+            new_unit.unitTitle = input("Unit Title: ")
+            new_unit.unitSchool = input("Unit School: ")
+            new_unit.unitBoard = input("Unit Board of Examiners: ")
+            user_input = input("Unit Delivery Mode (Face to face/Online/Both/None): ")
+            if user_input != "None": 
+                new_unit.unitDelivery = user_input
+            else: 
+                new_unit.unitDelivery = ""
+            new_unit.level = int(input("Unit Level: "))
+            new_unit.unitDescription = input("Unit Description: ")
+            new_unit.credit = int(input("Unit Credit: "))
+
+            while True:
+                user_input = input("Unit Assessment (leave blank to finish): ")
+                if user_input:
+                    new_unit.assessment.append(user_input)
                 else:
-                    req = Unit(j)
-                    new_prereq.orReq.append(req)
+                    break
 
-        while True:
-            value = input('List all majors this unit is part of (leave blank to finish): ')
-            if value:
-                new_unit.isPartOfMajor.append(value)
-            else:
-                break  
+            user_input = input('Prerequisite CNF (eg. [ACCT5432]^[ECON5541,ECON3300] ): ')
+            group = user_input.split("^")
+            counter = 0 
+            for g in group:
+                new_prereq = Prerequisite(code_value+"andReqs"+str(counter))
+                counter += 1
+                new_unit.prerequisitesCNF.append(new_prereq)
+                for unit in g[1:-1].split(","): 
+                    if onto[unit] in allunits:
+                        new_prereq.orReq.append(onto[unit])
+                    else:
+                        req = Unit(unit)
+                        new_prereq.orReq.append(req)
 
-        while True:
-            outcome = input("Unit Outcome (leave blank to finish): ")
-            if outcome:
-                new_unit.unitOutcome.append(outcome)
-            else:
-                break        
-        
-        new_unit.unitText.append(input("Required Text: "))
+            while True:
+                value = input('List all majors this unit is part of (leave blank to finish): ')
+                if value:
+                    new_unit.isPartOfMajor.append(value)
+                else:
+                    break  
 
-        new_unit.note.append(input("Note (optional): "))
-        
-        counter = 0 
-        while True: 
-            s = input("provide a contact type and hour (eg lecture-6) (leave blank to finish): ")
-            if s: 
-                name = code+"contact"+str(counter)
-                counter  += 1 
-                new_contact = Contact(name)
-                new_unit.contact.append(new_contact)
-                a = s.split("-")
-                new_contact.activity = a[0] 
-                new_contact.hours = int(a[1])
-            else:
-                break
-
-    if (action == "2"):
-        code_value = input("Major Code: ")
-        new_major = Major(code_value)
-        new_major.majorCode = code_value
-        new_major.majorTitle = input("Major Title: ")
-        new_major.majorSchool = input("Major School: ")
-        new_major.majorBoard = input("Major Board: ")
-        new_major.majorDelivery = input("Major Delivery: ")
-        new_major.majorDescription = input("Major Description: ")
-        new_major.majorText.append(input("Required Text: "))
-
-        while True:
-            user_input = input("Major Outcome (leave blank to finish): ")
-            if user_input:
-                new_major.majorOutcome.append(user_input)
-            else:
-                break
+            while True:
+                user_input = input("Unit Outcome (leave blank to finish): ")
+                if user_input:
+                    new_unit.unitOutcome.append(user_input)
+                else:
+                    break        
             
-        while True:
-            user_input = input("Course (leave blank to finish): ")
-            if user_input:
-                new_major.course.append(user_input)
-            else:
-                break
+            new_unit.unitText.append(input("Required Text: "))
+            new_unit.note.append(input("Note (optional): "))
             
-        while True:
-            user_input = input("Bridging Unit (leave blank to finish): ")
-            if user_input:
-                if onto[user_input] in allunits:
-                    new_major.bridging.append(onto[user_input])
+            counter = 0 
+            while True: 
+                user_input = input("Contact type and hour (eg lecture-6) (leave blank to finish): ")
+                if user_input: 
+                    new_contact = Contact(code_value+"contact"+str(counter))
+                    counter  += 1
+                    new_unit.contact.append(new_contact)
+                    contact_info = user_input.split("-")
+                    new_contact.activity = contact_info[0] 
+                    new_contact.hours = int(contact_info[1])
                 else:
-                    print(f"Unit with ID {user_input} not found in the ontology.")
-            else:
-                break
+                    break
+        
+        # Add a new major entity
+        elif action == "2":
+            code_value = input("Major Code: ")
+            new_major = Major(code_value)
+            new_major.majorCode = code_value
+            new_major.majorTitle = input("Major Title: ")
+            new_major.majorSchool = input("Major School: ")
+            new_major.majorBoard = input("Major Board: ")
+            user_input = input("Major Delivery Mode (Face to face/Online/Both/None): ")
+            if user_input != "None": 
+                new_major.majorDelivery = user_input
+            else: 
+                new_major.majorDelivery = ""
+            new_major.majorDescription = input("Major Description: ")
+            new_major.majorText.append(input("Required Text: "))
 
-        while True:
-            user_input = input("Core Unit (leave blank to finish): ")
-            if user_input:
-                if onto[user_input] in allunits:
-                    new_major.containsUnit.append(onto[user_input])
+            while True:
+                user_input = input("Major Outcome (leave blank to finish): ")
+                if user_input:
+                    new_major.majorOutcome.append(user_input)
                 else:
-                    print(f"Unit with ID {user_input} not found in the ontology.")
-            else:
-                break
+                    break
+                
+            while True:
+                user_input = input("Course (leave blank to finish): ")
+                if user_input:
+                    new_major.course.append(user_input)
+                else:
+                    break
+                
+            while True:
+                user_input = input("Bridging Unit (leave blank to finish): ")
+                if user_input:
+                    if onto[user_input] in allunits:
+                        new_major.bridging.append(onto[user_input])
+                    else:
+                        print(f"Unit with ID {user_input} not found in the ontology.")
+                else:
+                    break
 
-sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
+            while True:
+                user_input = input("Core Unit (leave blank to finish): ")
+                if user_input:
+                    if onto[user_input] in allunits:
+                        new_major.containsUnit.append(onto[user_input])
+                    else:
+                        print(f"Unit with ID {user_input} not found in the ontology.")
+                else:
+                    break
+                
+        # Remove a unit or major entity
+        elif action == "3":
+            user_input = input("Enter unit or major code: ")
+            if onto[user_input] in allunits:
+                for i in onto[user_input].contact:
+                    destroy_entity(i)
+                for i in onto[user_input].prerequisitesCNF:
+                    destroy_entity(i)
+                destroy_entity(onto[user_input])
+                print(f"Successfully removed unit {user_input}.")
+            elif onto[user_input] in Major.instances():
+                destroy_entity(onto[user_input])
+                print(f"Successfully removed major {user_input}.")
+            else:
+                print(f"Unit or major code {user_input} not found in the ontology.")
+        else:
+            print("Invalid action number.")
+
+# sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
 onto.save(file = "ontology.owl", format = "rdfxml")
 
 
