@@ -230,12 +230,12 @@ with onto:
                 new_major.majorText.append(obj.value)
             elif pred == TERMS.course:
                 new_major.course.append(obj.value)
-            elif pred == TERMS.bridging:
-                unit = str(obj).split('/')[-1]
-                new_major.bridging.append(onto[unit])
-            elif pred == TERMS.containsUnit:
-                unit = str(obj).split('/')[-1]
-                new_major.containsUnit.append(onto[unit])
+            # elif pred == TERMS.bridging:
+            #     unit = str(obj).split('/')[-1]
+            #     new_major.bridging.append(onto[unit])
+            # elif pred == TERMS.containsUnit:
+            #     unit = str(obj).split('/')[-1]
+            #     new_major.containsUnit.append(onto[unit])
 
 # sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
 

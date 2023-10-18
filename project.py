@@ -52,13 +52,15 @@ for unit_code, unit_data in units_data.items():
 
     totalHours = 0
     if "contact" in unit_data:
+        idx = 0
         for contact, hours in unit_data["contact"].items():
-            contact_uri = CONTACT[unit_code+"_"+contact.lower().replace(" ", "_")]
+            contact_uri = CONTACT[unit_code+"_contact_"+str(idx)]
             g.add((contact_uri, RDF.type, TERMS.Contact))
             g.add((contact_uri, TERMS.activity, Literal(contact)))
             g.add((contact_uri, TERMS.hours, Literal(hours, datatype=XSD.integer)))
             g.add((unit_uri, TERMS.contact, contact_uri))
             totalHours += int(hours)
+            idx += 1
     g.add((unit_uri, TERMS.totalHours, Literal(totalHours, datatype=XSD.integer)))
             
     if "note" in unit_data:
