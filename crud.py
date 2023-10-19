@@ -236,10 +236,11 @@ def update_action(entity_code):
             elif change_prop == "9":
                 get_recursive_unit("Bridging Unit (leave blank to finish): ", onto[entity_code].bridging, onto, allunits)
             
-            elif change_prop == "9":
+            elif change_prop == "10":
                 get_recursive_unit("Core Unit (leave blank to finish): ", onto[entity_code].containsUnit, onto, allunits)
             
             else:
+                print("exiting... ")
                 break
     else:
         print(f"Unit or major code {entity_code} not found in the ontology.")
