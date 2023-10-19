@@ -165,16 +165,14 @@ Note: The script maintains a log of queries and their results in a text file cal
 ## Executing OWL Ontology Rules
 
 1. Run `python3 ontology.py` to start the script to create an OWL ontology, apply SWRL rules to the handbook knowledge graph and saves it to 'ontology.owl'.
-2. It displays information which demonstrate that the rules have been applied.
+2. You can input additional SWRL rules, given that they are valid.
+3. Press `Enter` to continue running the script to apply SWRL rules and save the ontology.
+4. It displays information which demonstrates that the rules have been applied.
 
-## How to add data
+## How to Add, Update, or Remove Data
 
-## How to update data
-
-## How to remove data
-
-## How to add rules
-
-## How to update rules
-
-## How to remove rules
+1. Run `python3 crud.py` to start the script to load the ontology.
+2. The script will present you with a list of actions to choose from to update the ontology.
+3. You can add, update or remove unit entities or major entities.
+4. To exit the script, enter 0 when prompted.
+5. The script will save the updated ontology to 'updated.owl'.

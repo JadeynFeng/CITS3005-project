@@ -240,18 +240,38 @@ with onto:
             elif pred == TERMS.containsUnit:
                 unit = str(obj).split('/')[-1]
                 new_major.containsUnit.append(onto[unit])
-                
+    
     # SWRL rule 1: A prerequisite of a prerequisite is a prerequisite
-    rule1 = Imp()
-    rule1.set_as_rule("Unit(?a) ^ prerequisitesCNF(?a, ?p) ^ orReq(?p, ?b) ^ prerequisitesCNF(?b, ?q) -> prerequisitesCNF(?a, ?q)")
+    rule1 = "Unit(?a) ^ prerequisitesCNF(?a, ?p) ^ orReq(?p, ?b) ^ prerequisitesCNF(?b, ?q) -> prerequisitesCNF(?a, ?q)"
     
     # SWRL rule 2: An outcome of a core unit is an outcome of a major
-    rule2 = Imp()
-    rule2.set_as_rule("Major(?m) ^ containsUnit(?m, ?u) ^ unitOutcome(?u, ?o) -> majorOutcome(?m, ?o)")
-    
+    rule2 = "Major(?m) ^ containsUnit(?m, ?u) ^ unitOutcome(?u, ?o) -> majorOutcome(?m, ?o)"
+
     # SWRL rule 3: A required text of a core unit is a required text for a major
-    rule3 = Imp()
-    rule3.set_as_rule("Major(?m) ^ containsUnit(?m, ?u) ^ unitText(?u, ?t) -> majorText(?m, ?t)")
+    rule3 = "Major(?m) ^ containsUnit(?m, ?u) ^ unitText(?u, ?t) -> majorText(?m, ?t)"
+
+    swrl_rules = [rule1, rule2, rule3]
+    while True:
+        rule_input = input("Enter a SWRL rule (leave blank to finish): ")
+        if rule_input:
+            swrl_rules.append(rule_input)
+        else:
+            break
+    
+    applied_rules = []
+    for rule in swrl_rules:
+        try:
+            new_rule = Imp()
+            new_rule.set_as_rule(rule)
+            applied_rules.append(rule)
+        except:
+            print(f"Invalid SWRL rule: {rule}")
+            
+    print("\nApplied SWRL rules:")
+    for rule in applied_rules:
+        print(rule)
+    
+    input("\nPress Enter to continue...")
 
 sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
 onto.save(file = "ontology.owl", format = "rdfxml")
@@ -266,7 +286,7 @@ with onto:
         if unit.unitCode == "GEOG3310":
             for group in unit.prerequisitesCNF:
                 for prereq in group.orReq:
-                    print(f"{group} Group has {prereq.unitCode}")
+                    print(f"- {group} Group has {prereq.unitCode}")
     print("GEOG3310 has 1 prerequisite (GEOG2202) which has 4 prerequisites (GEOG1107, GEOG1106, GEOG1104, GEOG1103)")
     
     print("\n==========================================================================")
@@ -284,4 +304,4 @@ with onto:
             print(f"- {major.majorCode} has {len(major.majorText)} required texts")
     print("MJD-PSYCH, MJD-ANTHR, and MJD-PSYDM majors has 1 required text, but its core units have 2 distinct required texts, which gives a total of 3 required texts")
     
-    
+
