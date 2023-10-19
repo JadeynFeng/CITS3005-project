@@ -117,15 +117,143 @@ def delete_action(entity_code):
     else:
         print(f"Unit or major code {entity_code} not found in the ontology.")
 
+
+def update_action(entity_code):
+    if onto[entity_code] in allunits:
+        while True:
+            print("Properties:\n1. Unit title\n2. School \n3. Board of Examiners\n4. Level \n5. Delivery Mode\n6. Description\n7. Credit \n8. Outcomes\n9. Assessments\n10. Prerequisites\n11. Majors\n12. Contact\n0. Exit")
+            change_prop = input("Select a property to update: ")
+
+            if change_prop == "1":
+                user_input = input("Enter new value for property:")
+                onto[entity_code].unitTitle = user_input
+            
+            elif change_prop == "2":
+                user_input = input("Enter new value for property:")
+                onto[entity_code].unitSchool = user_input
+            
+            elif change_prop == "3":
+                user_input = input("Enter new value for property:")
+                onto[entity_code].unitBoard = user_input
+                
+            elif change_prop == "4":
+                user_input = input("Enter new value for property:")
+                onto[entity_code].level = user_input
+                
+            elif change_prop == "5":
+                user_input = input("Enter new value for property (Face to face/Online/Both/None): ")
+                if user_input in ["Face to face", "Online", "Both"]:
+                    onto[entity_code].unitDelivery = user_input
+                elif user_input == "None":
+                    onto[entity_code].unitDelivery = ""
+                            
+            elif change_prop == "6":
+                user_input = input("Enter new value for property:")
+                onto[entity_code].unitDescription = user_input
+            
+            elif change_prop == "7":
+                user_input = input("Enter new value for property:")
+                onto[entity_code].credit = user_input
+            
+            elif change_prop == "8":
+                get_recursive_input("Enter new value for property (leave blank to finish): ", onto[entity_code].unitOutcome)
+            
+            elif change_prop == "9":
+                get_recursive_input("Enter new value for property (leave blank to finish): ", onto[entity_code].assessment)
+
+            elif change_prop == "10":
+                for i in onto[entity_code].prerequisitesCNF:
+                    destroy_entity(i)
+                user_input = input('Enter a Prerequisite CNF (eg. [ACCT5432]^[ECON5541,ECON3300] ): ')
+                group = user_input.split("^")
+                counter = 0 
+                for g in group:
+                    new_prereq = onto.Prerequisite(entity_code+"andReqs"+str(counter))
+                    counter += 1
+                    onto[entity_code].prerequisitesCNF.append(new_prereq)
+                    for unit in g[1:-1].split(","): 
+                        if onto[unit] in allunits:
+                            new_prereq.orReq.append(onto[unit])
+                        else:
+                            req = onto.Unit(unit)
+                            new_prereq.orReq.append(req)
+
+            elif change_prop == "11":
+                get_recursive_input("Enter new value for property (leave blank to finish): ", onto[entity_code].isPartOfMajor)
+
+            elif change_prop == "12":
+                for i in onto[entity_code].contact:
+                    destroy_entity(i)
+                counter = 0 
+                while True: 
+                    user_input = input("Enter contact type and hour (eg lecture-6) (leave blank to finish): ")
+                    if user_input: 
+                        new_contact = onto.Contact(entity_code+"contact"+str(counter))
+                        counter  += 1
+                        onto[entity_code].contact.append(new_contact)
+                        contact_info = user_input.split("-")
+                        new_contact.activity = contact_info[0] 
+                        new_contact.hours = int(contact_info[1])
+                    else:
+                        break
+            else:
+                break
+            
+
+    elif onto[entity_code] in onto.Major.instances():
+        while True:
+            print("Properties:\n1. Title\n2. School \n3. Board of Examiners\n4. Delivery Mode \n5. Description\n6. Text\n7. Outcomes\n8. Courses\n9. bridging Units\n10. Contains Units\n0. Exit")
+            change_prop = input("Select a property to update: ")
+
+            if change_prop == "1":
+                onto[entity_code].majorTitle = get_string_input("Major Title: ")
+            
+            elif change_prop == "2":
+                onto[entity_code].majorSchool = get_string_input("Major School: ")
+
+            elif change_prop == "3":
+                onto[entity_code].majorBoard = get_string_input("Major Board: ")
+
+            elif change_prop == "4":
+                user_input = input("Enter new value for property for Major Delivery Mode (Face to face/Online/Both/None): ")
+                if user_input in ["Face to face", "Online", "Both"]:
+                    onto[entity_code].majorDelivery = user_input
+                elif user_input == "None":
+                    onto[entity_code].majorDelivery = ""
+            
+            elif change_prop == "5":
+                onto[entity_code].majorDescription = get_string_input("Major Description: ")
+            
+            elif change_prop == "6":
+                onto[entity_code].majorText.append(get_string_input("Required Text: "))
+
+            elif change_prop == "7":
+                get_recursive_input("Major Outcome (leave blank to finish): ", onto[entity_code].majorOutcome)
+            
+            elif change_prop == "8":
+                get_recursive_input("Course (leave blank to finish): ", onto[entity_code].course)
+            
+            elif change_prop == "9":
+                get_recursive_unit("Bridging Unit (leave blank to finish): ", onto[entity_code].bridging, onto, allunits)
+            
+            elif change_prop == "9":
+                get_recursive_unit("Core Unit (leave blank to finish): ", onto[entity_code].containsUnit, onto, allunits)
+            
+            else:
+                break
+    else:
+        print(f"Unit or major code {entity_code} not found in the ontology.")
+
+
 with onto:
-    allunits = onto.Unit.instances()
-    
     while True:
+        allunits = onto.Unit.instances()
         print("\n========================== ACTIONS ==========================")
         print("1. Add a new unit")
         print("2. Add a new major")
         print("3. Remove a unit or major")
-        print("0. Exit")
+        print("4. Update a unit or major")
+        print("0. Save changes and exit")
 
         action = input("Select an action number: ")
         
@@ -150,6 +278,12 @@ with onto:
             print("\nRemoving a unit or major...")
             entity_code = input("Enter unit or major code: ")
             delete_action(entity_code)
+        
+        # Update an existing unit or major entity
+        elif action == "4":
+            print("\nUpdating a unit or major...")
+            entity_code = input("Enter unit or major code: ")
+            update_action(entity_code)
             
         else:
             print("Invalid action number.")
