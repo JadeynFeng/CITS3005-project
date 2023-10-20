@@ -388,8 +388,9 @@ with open("query_results.txt", "w") as file:
                 result_text = "\t- No results found."
             else:
                 if query_index == 2:
-                    result_text = "\n".join([f"\t- {row.code}, {row.title}, Number of Majors: {row.m}" for row in query_results])
-                result_text = "\n".join([f"\t- {row.code}, {row.title}" for row in query_results])
+                    result_text = "\n".join([f"\t- {row.code}, {row.title} with {row.m} majors" for row in query_results])
+                else:
+                    result_text = "\n".join([f"\t- {row.code}, {row.title}" for row in query_results])
             print(result_text)
 
             file.write(f"Query {user_choice} - {query_prompt[query_index]}\n")

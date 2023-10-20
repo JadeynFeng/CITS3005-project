@@ -258,6 +258,7 @@ with onto:
         else:
             break
     
+    print("\n============================================================\n")
     applied_rules = []
     for rule in swrl_rules:
         try:

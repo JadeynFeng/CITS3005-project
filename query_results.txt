@@ -1,247 +1,117 @@
 ========================== QUERY RESULTS ==========================
-Query 6 - Find all prerequisites for a given unit
-	No results found.
+Query 3 - Find all units that appear in more than 3 majors
+	- SCIE3314, Crops and Cropping Systems, Number of Majors: 4
+	- AGRI1001, Feeding the World, Number of Majors: 5
+	- AGRI2201, Pasture and Livestock Systems, Number of Majors: 5
+	- ANIM3306, Clean, Green and Ethical Animal Production, Number of Majors: 4
+	- ENVT3306, Coastal Conservation and Management, Number of Majors: 5
+	- ENVT3362, Environmental Dynamics, Number of Majors: 8
+	- GEOG3303, Environmental Policy and Planning, Number of Majors: 8
+	- ENVT1104, Environmental Science and Technology, Number of Majors: 4
+	- ENVT2221, Global Climate Change and Biodiversity, Number of Majors: 5
+	- GEOG2202, Reading Landscapes: People and Processes, Number of Majors: 4
+	- GENG2004, Solid Mechanics, Number of Majors: 5
+	- ELEC3020, Embedded Systems, Number of Majors: 4
+	- ENSC2003, Engineering Electrical Fundamentals, Number of Majors: 5
+	- GENG3402, Control Engineering, Number of Majors: 4
+	- GENG1000, Engineering Practice 1, Number of Majors: 9
+	- GENG2000, Engineering Practice 2, Number of Majors: 9
+	- GENG3000, Engineering Practice 3, Number of Majors: 9
+	- ENSC2004, Engineering Mechanics, Number of Majors: 7
+	- GENG5507, Risk, Reliability and Safety, Number of Majors: 6
+	- ENSC1004, Engineering Materials, Number of Majors: 4
+	- GENG4411, Engineering Research Project Part 1, Number of Majors: 9
+	- GENG4412, Engineering Research Project Part 2, Number of Majors: 9
+	- GENG1010, Introduction to Engineering, Number of Majors: 9
+	- GENG5010, Professional Engineering Portfolio, Number of Majors: 9
+	- GENG5505, Project Management and Engineering Practice, Number of Majors: 7
+	- IMED1001, Form and Function, Number of Majors: 4
+	- AHEA2201, Aboriginal Health and Wellbeing, Number of Majors: 4
+	- CITS3403, Agile Web Development, Number of Majors: 7
+	- CITS3001, Algorithms, Agents and Artificial Intelligence, Number of Majors: 5
+	- CITS1401, Computational Thinking with Python, Number of Majors: 12
+	- CITS2401, Computer Analysis and Visualisation, Number of Majors: 12
+	- CITS3002, Computer Networks, Number of Majors: 6
+	- CITS2200, Data Structures and Algorithms, Number of Majors: 7
+	- CITS2211, Discrete Structures, Number of Majors: 4
+	- CITS2005, Object Oriented Programming, Number of Majors: 5
+	- CITS3007, Secure Coding, Number of Majors: 5
+	- CITS2002, Systems Programming, Number of Majors: 7
+	- CITS2402, Introduction to Data Science, Number of Majors: 4
+	- CITS1402, Relational Database Management Systems, Number of Majors: 6
+	- CITS1003, Introduction to Cybersecurity, Number of Majors: 6
+	- ACCT1101, Financial Accounting, Number of Majors: 4
+	- BUSN3001, Business Development Project, Number of Majors: 4
+	- MGMT1136, Management and Organisations, Number of Majors: 5
+	- CITS3200, Professional Computing, Number of Majors: 7
+	- MKTG3302, Small Business Management, Number of Majors: 4
+	- MKTG1203, Introduction to Marketing, Number of Majors: 5
+	- ANIM2220, Animal Diversity, Number of Majors: 4
+	- PLNT3306, Australian Vegetation, Number of Majors: 4
+	- BIOC2001, Biochemistry and Molecular Biology of the Cell, Number of Majors: 4
+	- ANHB3321, Biological Anthropology: Genes and Society, Number of Majors: 4
+	- ANHB2215, Biological Anthropology: Human Adaptation and Variation, Number of Majors: 4
+	- PSYC2217, Cognitive Neuroscience, Number of Majors: 4
+	- ENVT2250, Ecology, Number of Majors: 9
+	- GENE3350, Evolution and Development, Number of Majors: 4
+	- BIOL3364, Evolutionary Processes, Number of Majors: 7
+	- SCIE3304, Field Techniques in Marine Science, Number of Majors: 4
+	- BIOL1130, Frontiers in Biology, Number of Majors: 13
+	- GENE3370, Genomics, Number of Majors: 4
+	- ANHB1101, Human Biology I: Becoming Human, Number of Majors: 9
+	- ANHB1102, Human Biology II: Being Human, Number of Majors: 10
+	- BIOC1001, Introductory Cellular Biochemistry, Number of Majors: 6
+	- SCIE2204, Marine Systems, Number of Majors: 4
+	- SCIE1106, Molecular Biology of the Cell, Number of Majors: 13
+	- GENE2230, Molecular Genetics I, Number of Majors: 5
+	- PHYL1001, Physiology - How Does the Human Body Work?, Number of Majors: 4
+	- PHYL2002, Physiology of Cells, Number of Majors: 5
+	- BIOL1131, Plant and Animal Biology, Number of Majors: 16
+	- PLNT2204, Plant Diversity and Evolution, Number of Majors: 4
+	- PLNT2201, Plants in Action, Number of Majors: 6
+	- GENE2250, Principles of Inheritance, Number of Majors: 8
+	- CHEM1001, ChemistryProperties and Energetics, Number of Majors: 9
+	- CHEM1002, ChemistryStructure and Reactivity, Number of Majors: 5
+	- EART2204, Coastal Processes, Number of Majors: 4
+	- EART1104, Discovering Earth, Number of Majors: 4
+	- EART1105, Dynamic Planet, Number of Majors: 6
+	- ENVT2251, Hydrology and Water Resource Management, Number of Majors: 8
+	- ENVT3307, Oceanography, Number of Majors: 4
+	- ENVT2236, Soil Science, Number of Majors: 6
+	- ENVT2220, The Climate System, Number of Majors: 6
+	- MATH1012, Mathematical Theory and Methods, Number of Majors: 12
+	- MATH1011, Multivariable Calculus, Number of Majors: 12
+	- SCIE1104, Science, Society and Data Analysis, Number of Majors: 27
+	- STAT3064, Statistical Learning, Number of Majors: 4
+	- STAT1400, Statistics for Science, Number of Majors: 7
+	- PHYS1001, Physics for Scientists and Engineers, Number of Majors: 9
+	- SCOM1101, Communicating Science, Number of Majors: 21
+	- SCIE2205, Science Work Placement, Number of Majors: 4
+	- PSYC1102, Psychology: Behaviour in Context, Number of Majors: 8
+	- PSYC1101, Psychology: Mind and Brain, Number of Majors: 6
+	- ECON3300, Agricultural Economics and Marketing, Number of Majors: 5
+	- ECON2245, Business Economics, Number of Majors: 4
+	- ECON1101, Microeconomics: Prices and Markets, Number of Majors: 4
+	- ECON2105, Rise of the Global Economy, Number of Majors: 4
+	- WILG3001, Professional Experience Practicum, Number of Majors: 8
+	- LAWS2220, Birth, Life and Death: Health and Medical Law, Number of Majors: 4
+	- LAWS1111, Law, Conflict and Change, Number of Majors: 5
+	- CHIN2801, China Field Study, Number of Majors: 4
+	- LAWS2225, Indigenous Peoples and the Law, Number of Majors: 4
+	- PHIL2001, Bioethics, Number of Majors: 5
+	- PHIL1001, Ethics for the Digital Age: An Introduction to Moral Philosophy, Number of Majors: 7
+	- PHIL1002, Introduction to Critical Thinking, Number of Majors: 5
+	- PHIL3003, Moral Theory, Number of Majors: 4
+	- POLS3335, Social Movements and the Politics of Change, Number of Majors: 5
+	- POLS3204, The Politics of Gender, Number of Majors: 5
+	- INDG1150, Aboriginal Encounters: Strangers in our Backyard, Number of Majors: 6
+	- GEOG3301, Advanced GIS and Remote Sensing, Number of Majors: 8
+	- ASIA2002, Australia and Asia, Number of Majors: 5
+	- ASIA2001, Culture, Society and the State in Asia, Number of Majors: 5
+	- GEOG1104, Disasters!, Number of Majors: 5
+	- GEOG2201, Geographic Information Systems, Number of Majors: 17
+	- ASIA3001, Indonesian Politics and Culture, Number of Majors: 4
+	- ASIA3002, Issues in Japanese Society and Culture, Number of Majors: 4
+	- ASIA2004, Popular Culture in Asia, Number of Majors: 5
+	- ASIA3003, Social Issues in Contemporary China, Number of Majors: 5
 
-========================== QUERY RESULTS ==========================
-Query 7 - Find all units with a specific level
-	- EDUC9972, Doctoral Research Project Design
-	- EDUC9970, Doctoral Research Project Plan
-	- EDUC9971, Doctoral Research Scoping Project
-	- EDUC9930, Doctoral Thesis (full-time)
-	- EDUC9985, Doctoral Thesis (full-time)
-	- EDUC9940, Doctoral Thesis (part-time)
-	- EDUC9986, Doctoral Thesis (part-time)
-	- EDUC9973, Research Paradigms: Doctoral Project Report
-	- EDUC9610, Theoretical Foundations of the Study of Education
-	- ELEC9310, ICT Doctoral Thesis (full-time)
-	- ELEC9311, ICT Doctoral Thesis (part-time)
-	- SSEH9714, Sport Science, Exercise and Health Thesis Part 1
-	- SSEH9715, Sport Science, Exercise and Health Thesis Part 2
-	- SSEH9716, Sport Science, Exercise and Health Thesis Part 3
-	- ACRI9000, Academic Conduct and Research Integrity (ACRI)
-	- FNSC9644, Forensic Science Thesis (Anthropology) (full-time)
-	- SWSP9901, Advanced Research Methods in Social Work Part 1
-	- SWSP9907, Advanced Research Methods in Social Work Part 2
-	- SWSP9902, Advanced Studies in Social Work Part 1
-	- SWSP9908, Advanced Studies in Social Work Part 2
-	- SWSP9903, Advanced Theory and Practice in Social Work Part 1
-	- SWSP9909, Advanced Theory and Practice in Social Work Part 2
-	- SWSP9905, Doctor of Social Work Thesis (full-time)
-	- SWSP9906, Doctor of Social Work Thesis (part-time)
-	- SWSP9904, Research Paradigms in Social Work Studies Part 1
-	- SWSP9910, Research Paradigms in Social Work Studies Part 2
-
-========================== QUERY RESULTS ==========================
-Query 2 - Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam
-	- SCIE3314, Crops and Cropping Systems
-	- GEOG3300, Advanced Spatial Analysis
-	- ENVT3337, International Fieldwork Project
-	- PARL3399, WA Parliamentary Research Program
-	- GEOG3310, Fieldwork in Environmental Geography and Planning
-	- ARCT3050, Active Matter
-	- ARCT3040, Advanced Design Thinking
-	- ARCT3000, Architecture Studio 3
-	- ARCT3001, Architecture Studio 3
-	- LACH3003, Design through Landscape Management
-	- IDES3000, Integrated Design Studio 3--Complex
-	- LACH3001, Landscape Resolutions Studio
-	- LACH3000, Landscape Synthesis Studio
-	- GEOG3302, Local Places, Global Contexts
-	- ARCT3030, Materials and Large Construction
-	- GEOG3305, Urban Planning and Design
-	- COMM3003, Designing Interactive Media
-	- COMM3004, Journalism and Strategic Communication
-	- COMM3001, Media Enterprise in Transition
-	- COMM3002, Media Production Project
-	- SCOM3321, Science and the Media
-	- SCOM3205, Science Presentations
-	- COMM3901, Television and Video Production
-	- MUSC3543, Conducting
-	- MUSC3441, Contemporary Popular Music Principal Studies 5
-	- MUSC3336, Music in Film, TV and Video Games
-	- MUSC3335, Music in the Sixties
-	- MUSC3603, Music Wild Card
-	- MUSC3341, Music, Society, and Ideas
-	- MUSC3741, Practical Studies D
-	- MUSC3582, Principal Studies 6: Composition
-	- MUSC3584, Principal Studies 6: Musicology
-	- MUSC3538, Professional Skills: Music Industry and Artist
-	- MUSC3571, Sound Art: Advanced Studio
-	- MUSC3572, Sound Art: Major Project
-	- MUSC3588, Studio Teaching 2
-	- HART3203, (Inter)national History of Art Study Tour
-	- ARTF3030, Advanced Art and Biotechnologies
-	- ARTF3040, Advanced Art and Environment
-	- ARTF3020, Advanced Film: Immersive Cinematic Experiences
-	- ARTF3050, Advanced Major Project
-	- ARTF3000, Advanced Studio
-	- HART3666, Australian and Aboriginal Art
-	- HART3040, Breaking Art
-	- HART3044, Contemporary Art and Tradition in China
-	- HART3042, Living Paris: Experiencing and Representing the Modern City
-	- HART3301, Manet and the French Avant-Garde
-	- HART3340, Materialist Avant-Garde Film
-	- HART3302, Michelangelo
-	- HART3333, Picturing the Self: Portraiture in Nineteenth-century Europe
-	- HART3276, Prints from Drer to Toulouse-Lautrec
-	- HART3282, Rome
-	- HART3361, The Dutch Golden Age and the Art of Exploration
-	- HART3371, The Northern Renaissance
-	- HART3375, Twenty-first Century Art
-	- HART3331, Visual Culture and Art in America: 19002000
-	- EDUC3013, Data-Informed Practice in the Primary English Classroom
-	- EDUC3016, Data-informed Practice in the Primary Mathematics Classroom
-	- EDUC3011, Diversity, Inclusion and Differentiation
-	- MUSC3560, Music Education in Research and Practice
-	- EDUC3018, Professional Experience 3: Planning in Response to Student Diversity
-	- EDUC3025, Teaching Children for Whom English is a Second or Additional Language or Dialect
-	- EDUC3012, Teaching Primary School Science
-	- EDUC3047, Technologies for Children: Design, Innovation and Enterprise (Primary Specialisation 2)
-	- EDUC3045, Technologies for Children: Digital Systems, Implementation and Assessment (Primary Specialisation 1)
-	- EDUC3014, Technologies for the Primary classroom
-	- EDUC3027, The Creative English Teacher in the Primary School
-	- GENG3000, Engineering Practice 3
-	- MECH3402, Engineering Project 1
-	- MECH3406, Engineering Project 2
-	- ENVE3609, Designing as an Environmental Engineer
-	- DENT3003, Anatomy and Oral Sciences
-	- DENT3008, Dental Public Health and Research Methodology
-	- DENT3007, Fundamentals of Clinical Dentistry 1
-	- DENT3005, General Medicine and Pharmacology
-	- DENT3004, Introduction to Clinical Dentistry
-	- IMED3111, Integrated Medical Systems 1
-	- IMED3998, Integrated Medical Systems 1
-	- IMED3112, Integrated Medical Systems 2
-	- IMED3999, Integrated Medical Systems 2
-	- AHEA3200, Aboriginal Health Community Organisation Placement
-	- AHEA3300, Aboriginal Health Research Project
-	- SSEH3339, Community and Worksite Health Promotion
-	- HSMD3316, Health Industry Practicum
-	- PUBH3305, Health Research Design and Methods
-	- PUBH3300, Health Science Professional Placement
-	- IMED3301, Issues in Women's Health Research
-	- PUBH3308, Population Health Practicum
-	- PODI3000, Professionalism in Practice
-	- PODI3118, Research and Evidence in Practice
-	- BMED3002, Application of Humanities to Health care
-	- BMED3003, Building the bridge while walking over it: the journey to person centred health care
-	- SSEH3394, Professional Practice
-	- SSEH3393, Professional Practice Part 1
-	- CITS3006, Penetration Testing
-	- BUSN3002, Asia Literacy and Business Engagement
-	- BUSN3020, Innovation and Startup Practice
-	- MKTG3314, Entrepreneurship in Practice
-	- MKTG3308, Marketing Analytics
-	- MKTG3303, New Product Development
-	- WILG3002, New Colombo Plan Professional Experience Practicum
-	- GCRL3000, BPhil Research Project
-	- ANHB3310, Human Biology: Applications and Investigations I
-	- ANHB3320, Human Biology: Applications and Investigations II
-	- CHEM3391, Chemistry Research Part 1
-	- CHEM3392, Chemistry Research Part 2
-	- BMED3001, Narrative Medicine for research, education and practice
-	- ECON3206, Economic Analysis Project
-	- SVLG3007, Applied Global Citizenship
-	- SWSP3007, Decolonising Social Work: Anti-Oppressive Practices
-	- SWSP3001, Field Education 1: First Placement
-	- WILG3001, Professional Experience Practicum
-	- SWSP3002, Social Work and Mental Health Practice
-	- SWSP3004, SW Methods 3: Participatory Practices for Working with People
-	- ENGL3801, Advanced Literary Theory
-	- ENGL3300, Australian Literature and Cinema
-	- CHIN3405, Chinese 5
-	- CHIN3406, Chinese 6
-	- ITAL3816, Dante's Divine Comedy: a medieval masterpiece for the modern world
-	- FREN3406, French Studies 6
-	- FREN3407, French Studies 7
-	- FREN3408, French Studies 8
-	- FREN3409, French Studies 9
-	- GRMN3410, German Studies 10
-	- GRMN3813, German Studies 13
-	- GRMN3405, German Studies 5
-	- GRMN3406, German Studies 6
-	- GRMN3407, German Studies 7
-	- GRMN3408, German Studies 8
-	- GRMN3409, German Studies 9
-	- INDO3406, Indonesian 6
-	- INDO3802, Indonesian In-country 6
-	- ITAL3410, Italian Studies 10
-	- ITAL3405, Italian Studies 5
-	- ITAL3406, Italian Studies 6
-	- ITAL3407, Italian Studies 7
-	- ITAL3408, Italian Studies 8
-	- ITAL3409, Italian Studies 9
-	- KORE3405, Korean 5
-	- KORE3406, Korean 6
-	- KORE3407, Korean 7
-	- KORE3408, Korean 8
-	- WILG3003, Languages Teaching Practicum
-	- ITAL3815, Linguistic History of Italy
-	- SPAN3813, Literature in Spanish
-	- ITAL3817, Modern Italy in Film
-	- ENGL3001, Poetry and Poetics
-	- ENGL3602, Shakespeare: Page, Stage, Screen
-	- SPAN3405, Spanish Studies 5
-	- SPAN3406, Spanish Studies 6
-	- ENGL3604, Victorian Dreams and the Technological World
-	- ENGL3200, Writing/Environment
-	- HART3001, Curating First Nations Art
-	- HART3204, Curatorial Studies Internship
-	- CLAN3009, Religion, Society and the Divine from Augustus to Muhammad
-	- SCTS3001, Science and Technology in Focus
-	- PHIL3008, What to Do? How to Make Rational Decisions under Uncertainty
-	- POLS3342, Global Environmental Politics
-	- IREL3002, International Norms, Ethics, and Human Rights
-	- POLS3335, Social Movements and the Politics of Change
-	- POLS3334, The International Politics of Africa
-	- POLS3204, The Politics of Gender
-	- HART3330, Art Theory
-	- SOCS3888, Asia-Pacific Field Study
-	- ARCY3012, 500 years of Historical, Maritime and Industrial Archaeology
-	- GEOG3301, Advanced GIS and Remote Sensing
-	- HIST3005, African American History:  Freedom Struggles from Plantation to Prison and Beyond
-	- CLAN3012, After Antiquity: Receptions of Greco-Roman Culture from Augustine to Atwood
-	- CLAN3004, Alexander the Great
-	- HIST3334, American Outlaws: Crime and Violence in American Life
-	- ARCY3013, Archaeology for Professional Development
-	- ARCY3011, Australian Archaeology
-	- GEOG3308, Climate Change: Policy and Practice
-	- ASIA3006, Contemporary Korean Society
-	- ANTH3402, Contemporary Social Thought
-	- ARCY3100, Doing Archaeology: Advanced Fieldwork and Collections Research
-	- ARCY3003, Doing Archaeology: Analytical Skills
-	- ARCY3002, Doing Archaeology: Fieldschool
-	- ANTH3401, Engaged Practices
-	- ANTH3001, Ethnography
-	- SCOM3319, Exhibitions and Interpretation
-	- GEND3901, Feminist Thought
-	- HIST3008, From Sudan to Saddam: Australia's Foreign Wars
-	- ASIA3004, Gender and Power in Asia
-	- CLAN3010, Greece Without Borders: The Hellenistic World
-	- HIST3001, History in 4D
-	- HIST3456, History of Christianity
-	- HIST3302, Imagining the Nation in European Cultural History
-	- ANTH3601, Indigenous Australia
-	- INDG3400, Indigenous People and Global Issues
-	- INDG3300, Indigenous Research
-	- INDG3800, Indigenous Ways of Knowing 3 (Advanced)
-	- HIST3014, Intimate Strangers: Journeys in Indigenous Australian History
-	- HIST3010, Introduction to African History
-	- ASIA3002, Issues in Japanese Society and Culture
-	- SOCS3401, Learning and Teaching Languages Other Than English
-	- ANTH3501, Mind, Body, Culture
-	- HIST3017, Mysticism, Melancholy and Madness
-	- HIST3012, Rights, Rule and Power: From Magna Carta to the French Revolution
-	- CLAN3008, Roman Britain
-	- SCOM3325, Science Communication as an Academic Discipline
-	- CLAN3002, The Emergence of Greece
-	- CLAN3006, The Roman Revolution
-	- HIST3004, Twentieth-century Britain
-	- SVLG3008, Approaches to Wicked Problems
-	- SVLG3003, McCusker Centre for Citizenship Internship
-	- GEND3904, Queer Theory
-	- WILG3301, Work Integrated Learning Internship (Arts) 2
-	- HART3310, Art and Games: from Dada to Data
-
-========================== QUERY RESULTS ==========================
-========================== QUERY RESULTS ==========================
