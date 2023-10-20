@@ -178,7 +178,7 @@ Note: All constraints shape graph can be found on `constraints.shacl`.
 ### SWRL Rules
 1. A prerequisite of a prerequisite is a prerequisite.
 2. An outcome of a core unit is an outcome of a major.
-3. A required text of a core unit is a required text for a major.
+3. A required text of a core unit is a required text for a major (based on the assumption that this is relating to the unitText and majorText property). 
 
 # Instructions
 ## Executing SPARQL Queries
