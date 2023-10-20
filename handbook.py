@@ -183,7 +183,7 @@ q3 = """
     HAVING (COUNT(?major) > 3)     
 """
 
-# Query 4 : Basic search functionality in unit's description or outcomes
+# Query 4 : Basic search functionality in unit's description or outcomes by inputting a search string
 q4 = """
     PREFIX unit: <http://uwabookofknowledge.org/unit/>
     PREFIX terms: <http://uwabookofknowledge.org/terms/>
@@ -334,7 +334,7 @@ query_prompt = [
     "Find all units with more than 6 outcomes",
     "Find all level 3 units that do not have an exam, and where none of their prerequisites have an exam",
     "Find all units that appear in more than 3 majors",
-    "Basic search functionality in unit's description or outcomes",
+    "Basic search functionality in unit's description or outcomes by inputting a search string",
     "Find all units with a specific major",
     "Find all prerequisites for a given unit",
     "Find all units with a specific level",
