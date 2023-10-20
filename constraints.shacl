@@ -5,251 +5,251 @@
 @prefix major: <http://uwabookofknowledge.org/major/> .
 @prefix terms: <http://uwabookofknowledge.org/terms/> .
 
-# # Constraint 1 : Every prerequisite for a level X unit should have a level less than X
-# unit:UnitShape1 a sh:NodeShape ; 
-#     sh:targetClass terms:Unit ; 
-#     sh:sparql [
-#         sh:message "Every prerequisite for a level X unit should have a level less than X." ; 
-#         sh:prefixes terms: ; 
-#         sh:select """
-#             SELECT $this (terms:unitCode AS ?path)
-#             WHERE {
-#                 $this terms:level ?unitLevel . 
-#                 $this terms:prerequisitesCNF ?andReq . 
-#                 ?andReq rdf:type terms:AndReq . 
-#                 ?andReq terms:orReq ?orReq . 
-#                 ?orReq terms:level ?prereqLevel .
-#                 FILTER (isLiteral(?unitLevel) && ?prereqLevel >= ?unitLevel)
-#             }
-#         """ ;
-#     ] . 
+# Constraint 1 : Every prerequisite for a level X unit should have a level less than X
+unit:UnitShape1 a sh:NodeShape ; 
+    sh:targetClass terms:Unit ; 
+    sh:sparql [
+        sh:message "Every prerequisite for a level X unit should have a level less than X." ; 
+        sh:prefixes terms: ; 
+        sh:select """
+            SELECT $this (terms:unitCode AS ?path)
+            WHERE {
+                $this terms:level ?unitLevel . 
+                $this terms:prerequisitesCNF ?andReq . 
+                ?andReq rdf:type terms:AndReq . 
+                ?andReq terms:orReq ?orReq . 
+                ?orReq terms:level ?prereqLevel .
+                FILTER (isLiteral(?unitLevel) && ?prereqLevel >= ?unitLevel)
+            }
+        """ ;
+    ] . 
 
 # Constraint 2 : No unit should be its own prerequisite
-# unit:UnitShape2 a sh:NodeShape ; 
-#     sh:targetClass terms:Unit ; 
-#     sh:sparql [
-#         sh:message "No unit should be its own prerequisite." ; 
-#         sh:prefixes terms: ; 
-#         sh:select """
-#             SELECT $this (terms:unitCode AS ?path)
-#             WHERE {
-#                 $this terms:unitCode ?unitCode . 
-#                 $this terms:prerequisitesCNF ?andReq . 
-#                 ?andReq rdf:type terms:AndReq . 
-#                 ?andReq terms:orReq ?orReq . 
-#                 ?orReq terms:unitCode ?prereqCode .
-#                 FILTER (isLiteral(?prereqCode) && ?prereqCode = ?unitCode)
-#             }
-#         """ ;
-#     ] . 
+unit:UnitShape2 a sh:NodeShape ; 
+    sh:targetClass terms:Unit ; 
+    sh:sparql [
+        sh:message "No unit should be its own prerequisite." ; 
+        sh:prefixes terms: ; 
+        sh:select """
+            SELECT $this (terms:unitCode AS ?path)
+            WHERE {
+                $this terms:unitCode ?unitCode . 
+                $this terms:prerequisitesCNF ?andReq . 
+                ?andReq rdf:type terms:AndReq . 
+                ?andReq terms:orReq ?orReq . 
+                ?orReq terms:unitCode ?prereqCode .
+                FILTER (isLiteral(?prereqCode) && ?prereqCode = ?unitCode)
+            }
+        """ ;
+    ] . 
 
 # # Constraint 3 : No major should require more than 40 contact hours per week
-# unit:MajorShape1 a sh:NodeShape ; 
-#     sh:targetClass terms:Major ; 
-#     sh:sparql [
-#         sh:message "No major should require more than 40 contact hours per week." ; 
-#         sh:prefixes terms: ; 
-#         sh:select """
-#             SELECT $this (SUM(?totalhours) AS ?value )
-#             WHERE {
-#                 $this terms:containsUnit ?unit . 
-#                 ?unit terms:level ?level . 
-#                 ?unit terms:totalHours ?totalhours . 
-#             }
-#             GROUP BY $this ?level
-#             HAVING (SUM(?totalhours) > 80)
-#         """ ;
-#     ] . 
+unit:MajorShape1 a sh:NodeShape ; 
+    sh:targetClass terms:Major ; 
+    sh:sparql [
+        sh:message "No major should require more than 40 contact hours per week." ; 
+        sh:prefixes terms: ; 
+        sh:select """
+            SELECT $this (SUM(?totalhours) AS ?value )
+            WHERE {
+                $this terms:containsUnit ?unit . 
+                ?unit terms:level ?level . 
+                ?unit terms:totalHours ?totalhours . 
+            }
+            GROUP BY $this ?level
+            HAVING (SUM(?totalhours) > 80)
+        """ ;
+    ] . 
 
-# # Constraint 4 : Required Properties for Unit Entity
-# unit:UnitShape a sh:NodeShape ;
-#     sh:targetClass terms:Unit ;
-#     sh:property [       # Must have only 1 unit code
-#         sh:path terms:unitCode ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:string ;
-#         sh:pattern "^[A-Za-z]{4}[0-9]{4}$" ;
-#     ] ;
-#     sh:property [       # Must have only 1 unit title
-#         sh:path terms:unitTitle ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:string ; 
-#     ] ;
-#     sh:property [       # Must have only 1 school
-#         sh:path terms:unitSchool ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:string ; 
-#     ] ;
-#     sh:property [       # Must have only 1 board of examiners
-#         sh:path terms:unitBoard ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:string ; 
-#     ] ;
-#     sh:property [       # Must have only 1 delivery mode
-#         sh:path terms:unitDelivery ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:string ;
-#         sh:in (         # Must be these
-#             "" "Face to face" "Online" "Both"  
-#         ) ;
-#     ] ;
-#     sh:property [       # Must have only 1 unit level
-#         sh:path terms:level ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:integer ;
-#     ] ;
-#     sh:property [       # Must have only 1 unit description
-#         sh:path terms:unitDescription ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:string ; 
-#     ] ;
-#     sh:property [       # Must have only 1 credit points
-#         sh:path terms:credit ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:integer ;
-#     ] ;
-#     sh:property [       # Assessment
-#         sh:path terms:assessment ;
-#         sh:datatype xsd:string ; 
-#     ] ;
-#     sh:property [       # Majors
-#         sh:path terms:isPartOfMajor ;
-#         sh:datatype xsd:string ; 
-#     ] ;
-#     sh:property [       # Outcomes
-#         sh:path terms:unitOutcome ;
-#         sh:datatype xsd:string ; 
-#     ] ;
-#     sh:property [       # Prerequisites Text
-#         sh:path terms:unitText ;
-#         sh:datatype xsd:string ; 
-#     ] ;
-#     sh:property [       # Advisable prior study
-#         sh:path terms:advisablePriorStudy ;
-#         sh:class terms:Unit ;
-#     ] ;
-#     sh:property [       # Prerequisites CNF
-#         sh:path terms:prerequisitesCNF ;
-#         sh:class terms:AndReq ;
-#         sh:nodeKind sh:IRI ; 
-#     ] ;
-#     sh:property [       # Contact
-#         sh:path terms:contact ;
-#         sh:class terms:Contact ;
-#         sh:nodeKind sh:IRI ; 
-#     ] ;
-#     sh:property [       # Must have only 1 total hours
-#         sh:path terms:totalHours ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:integer ;
-#     ] ;
-#     sh:property [       # Note
-#         sh:path terms:note ;
-#         sh:datatype xsd:string ; 
-#     ] .
+# Constraint 4 : Required Properties for Unit Entity
+unit:UnitShape a sh:NodeShape ;
+    sh:targetClass terms:Unit ;
+    sh:property [       # Must have only 1 unit code
+        sh:path terms:unitCode ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[A-Za-z]{4}[0-9]{4}$" ;
+    ] ;
+    sh:property [       # Must have only 1 unit title
+        sh:path terms:unitTitle ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ; 
+    ] ;
+    sh:property [       # Must have only 1 school
+        sh:path terms:unitSchool ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ; 
+    ] ;
+    sh:property [       # Must have only 1 board of examiners
+        sh:path terms:unitBoard ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ; 
+    ] ;
+    sh:property [       # Must have only 1 delivery mode
+        sh:path terms:unitDelivery ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:in (         # Must be these
+            "" "Face to face" "Online" "Both"  
+        ) ;
+    ] ;
+    sh:property [       # Must have only 1 unit level
+        sh:path terms:level ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+    ] ;
+    sh:property [       # Must have only 1 unit description
+        sh:path terms:unitDescription ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ; 
+    ] ;
+    sh:property [       # Must have only 1 credit points
+        sh:path terms:credit ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+    ] ;
+    sh:property [       # Assessment
+        sh:path terms:assessment ;
+        sh:datatype xsd:string ; 
+    ] ;
+    sh:property [       # Majors
+        sh:path terms:isPartOfMajor ;
+        sh:datatype xsd:string ; 
+    ] ;
+    sh:property [       # Outcomes
+        sh:path terms:unitOutcome ;
+        sh:datatype xsd:string ; 
+    ] ;
+    sh:property [       # Prerequisites Text
+        sh:path terms:unitText ;
+        sh:datatype xsd:string ; 
+    ] ;
+    sh:property [       # Advisable prior study
+        sh:path terms:advisablePriorStudy ;
+        sh:class terms:Unit ;
+    ] ;
+    sh:property [       # Prerequisites CNF
+        sh:path terms:prerequisitesCNF ;
+        sh:class terms:AndReq ;
+        sh:nodeKind sh:IRI ; 
+    ] ;
+    sh:property [       # Contact
+        sh:path terms:contact ;
+        sh:class terms:Contact ;
+        sh:nodeKind sh:IRI ; 
+    ] ;
+    sh:property [       # Must have only 1 total hours
+        sh:path terms:totalHours ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+    ] ;
+    sh:property [       # Note
+        sh:path terms:note ;
+        sh:datatype xsd:string ; 
+    ] .
 
-# # Constraint 5 : Required Properties for Major Entity
-# unit:MajorShape a sh:NodeShape ;
-#     sh:targetClass terms:Major ;
-#     sh:property [       # Must have only 1 major code
-#         sh:path terms:majorCode ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:string ;
-#         sh:pattern "^[A-Za-z]{3}-[A-Za-z]{5}$" ;
-#     ] ;
-#     sh:property [       # Must have only 1 major title
-#         sh:path terms:majorTitle ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:string ; 
-#     ] ;
-#     sh:property [       # Must have only 1 school
-#         sh:path terms:majorSchool ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:string ; 
-#     ] ;
-#     sh:property [       # Must have only 1 board of examiners
-#         sh:path terms:majorBoard ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:string ; 
-#     ] ;
-#     sh:property [       # Must have only 1 delivery mode
-#         sh:path terms:majorDelivery ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:string ;
-#         sh:in (         # Must be these
-#             "" "Face to face" "Online" "Both"  
-#         ) ;
-#     ] ;
-#     sh:property [       # Must have only 1 description
-#         sh:path terms:majorDescription ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:string ; 
-#     ] ;
-#     sh:property [       # Prerequisites Text
-#         sh:path terms:majorText ;
-#         sh:datatype xsd:string ; 
-#     ] ;
-#     sh:property [       # Must have atleast 1 outcome
-#         sh:path terms:majorOutcome ;
-#         sh:minCount 1 ;
-#         sh:datatype xsd:string ; 
-#     ] ;
-#     sh:property [       # Must have atleast 1 course
-#         sh:path terms:course ;
-#         sh:minCount 1 ;
-#         sh:datatype xsd:string ; 
-#         sh:pattern "^[A-Za-z]{2}[0-9]{3}$" ;
-#     ] ;
-#     sh:property [       # Bridging units
-#         sh:path terms:bridging ;
-#         sh:class terms:Unit ;
-#         sh:nodeKind sh:IRI ; 
-#     ] ;
-#     sh:property [       # Must have atleast 1 core unit
-#         sh:path terms:containsUnit ;
-#         sh:minCount 1 ;
-#         sh:class terms:Unit ;
-#         sh:nodeKind sh:IRI ; 
-#     ] .
+# Constraint 5 : Required Properties for Major Entity
+unit:MajorShape a sh:NodeShape ;
+    sh:targetClass terms:Major ;
+    sh:property [       # Must have only 1 major code
+        sh:path terms:majorCode ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[A-Za-z]{3}-[A-Za-z]{5}$" ;
+    ] ;
+    sh:property [       # Must have only 1 major title
+        sh:path terms:majorTitle ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ; 
+    ] ;
+    sh:property [       # Must have only 1 school
+        sh:path terms:majorSchool ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ; 
+    ] ;
+    sh:property [       # Must have only 1 board of examiners
+        sh:path terms:majorBoard ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ; 
+    ] ;
+    sh:property [       # Must have only 1 delivery mode
+        sh:path terms:majorDelivery ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:in (         # Must be these
+            "" "Face to face" "Online" "Both"  
+        ) ;
+    ] ;
+    sh:property [       # Must have only 1 description
+        sh:path terms:majorDescription ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ; 
+    ] ;
+    sh:property [       # Prerequisites Text
+        sh:path terms:majorText ;
+        sh:datatype xsd:string ; 
+    ] ;
+    sh:property [       # Must have atleast 1 outcome
+        sh:path terms:majorOutcome ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ; 
+    ] ;
+    sh:property [       # Must have atleast 1 course
+        sh:path terms:course ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ; 
+        sh:pattern "^[A-Za-z]{2}[0-9]{3}$" ;
+    ] ;
+    sh:property [       # Bridging units
+        sh:path terms:bridging ;
+        sh:class terms:Unit ;
+        sh:nodeKind sh:IRI ; 
+    ] ;
+    sh:property [       # Must have atleast 1 core unit
+        sh:path terms:containsUnit ;
+        sh:minCount 1 ;
+        sh:class terms:Unit ;
+        sh:nodeKind sh:IRI ; 
+    ] .
 
-# # Constraint 6 : Required Properties for Contact Entity
-# unit:ContactShape a sh:NodeShape ;
-#     sh:targetClass terms:Contact ;
-#     sh:property [       # Contact activity type
-#         sh:path terms:activity ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:string ;
-#     ] ;
-#     sh:property [       # Contact hours
-#         sh:path terms:hours ;
-#         sh:minCount 1 ;
-#         sh:maxCount 1 ;
-#         sh:datatype xsd:integer ;
-#     ] .
+# Constraint 6 : Required Properties for Contact Entity
+unit:ContactShape a sh:NodeShape ;
+    sh:targetClass terms:Contact ;
+    sh:property [       # Contact activity type
+        sh:path terms:activity ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [       # Contact hours
+        sh:path terms:hours ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+    ] .
 
-# # Constraint 7 : Required Properties for AndReq Entity
-# unit:AndReqShape a sh:NodeShape ;
-#     sh:targetClass terms:AndReq ;
-#     sh:property [       # Must have atleast 1 orReq
-#         sh:path terms:orReq ;
-#         sh:minCount 1 ;
-#         sh:class terms:Unit ;
-#         sh:nodeKind sh:IRI ; 
-#     ] .
+# Constraint 7 : Required Properties for AndReq Entity
+unit:AndReqShape a sh:NodeShape ;
+    sh:targetClass terms:AndReq ;
+    sh:property [       # Must have atleast 1 orReq
+        sh:path terms:orReq ;
+        sh:minCount 1 ;
+        sh:class terms:Unit ;
+        sh:nodeKind sh:IRI ; 
+    ] .
 
