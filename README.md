@@ -1,3 +1,9 @@
+# CITS3005 Project - UWA Handbook Knowledge Graph
+
+## Group Members
+- Allison Lau (23123849)
+- Jadeyn Feng (23285469)
+
 # Knowledge Graph Overview
 ## Schema
 ### Namespaces

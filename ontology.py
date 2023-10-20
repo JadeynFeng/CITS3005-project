@@ -1,3 +1,6 @@
+# Allison Lau (23123849)
+# Jadeyn Feng (23285469)
+
 from owlready2 import *
 from rdflib import Graph, Namespace, RDF
 

@@ -1,3 +1,6 @@
+# Allison Lau (23123849)
+# Jadeyn Feng (23285469)
+
 from rdflib import Graph, Literal, Namespace, RDF, XSD
 import json
 
