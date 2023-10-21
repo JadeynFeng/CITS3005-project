@@ -10,6 +10,7 @@ TERMS = Namespace("http://uwabookofknowledge.org/terms/")
 handbook = Graph()
 handbook.parse('handbook.rdf', format='xml')
 
+# Create the ontology
 onto_path.append(".")
 onto = get_ontology("http://uwabookofknowledge.org/ontology.owl#")
 
@@ -20,7 +21,7 @@ with onto:
     class Prerequisite(Thing): pass
     class Contact(Thing): pass
 
-    # Define object properties for Unit entity
+    # Define properties for Unit entity
     class unitCode(DataProperty, FunctionalProperty): 
         domain = [Unit]
         range = [str]
@@ -89,7 +90,7 @@ with onto:
         domain = [Unit]
         range = [Unit]
         
-    # Define data properties for Contact entity
+    # Define properties for Contact entity
     class activity(DataProperty, FunctionalProperty):
         domain = [Contact]
         range = [str]
@@ -98,7 +99,7 @@ with onto:
         domain = [Contact]
         range = [int] 
 
-    # Define object properties for Major entity
+    # Define properties for Major entity
     class majorCode(DataProperty, FunctionalProperty): 
         domain = [Major]
         range = [str]
@@ -195,6 +196,7 @@ with onto:
 
     allunits = Unit.instances()
 
+    # Load Prerequisite Entities
     for subj, obj in handbook.subject_objects(TERMS.orReq):
         current_prereqCNF = str(subj).split('/')[-1]
         current_orReq = str(obj).split('/')[-1]
@@ -253,6 +255,7 @@ with onto:
     # SWRL rule 3: A required text of a core unit is a required text for a major
     rule3 = "Major(?m) ^ containsUnit(?m, ?u) ^ unitText(?u, ?t) -> majorText(?m, ?t)"
 
+    # User interface to add SWRL rules
     swrl_rules = [rule1, rule2, rule3]
     while True:
         rule_input = input("Enter a SWRL rule (leave blank to finish): ")
@@ -261,6 +264,7 @@ with onto:
         else:
             break
     
+    # Display applied SWRL rules and invalid SWRL rules
     print("\n============================================================\n")
     applied_rules = []
     for rule in swrl_rules:
@@ -277,9 +281,9 @@ with onto:
     
     input("\nPress Enter to continue...")
 
+# Apply reasoning and Save the ontology
 sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True)
 onto.save(file = "ontology.owl", format = "rdfxml")
-
 
 # Demonstration of SWRL rules applied onto Ontology
 with onto:

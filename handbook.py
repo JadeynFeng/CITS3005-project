@@ -350,6 +350,7 @@ query_prompt = [
 
 query_string = [q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12]
 
+# User Interface for Query Execution Menu
 with open("query_results.txt", "w") as file:
     while True:
         file.write("========================== QUERY RESULTS ==========================\n")
@@ -384,6 +385,7 @@ with open("query_results.txt", "w") as file:
                 user_input = input("Enter a delivery mode ('Face to face', 'Online', 'Both'): ").capitalize()
                 query = query.replace("{user_input}", user_input)
             
+            # Print the query and results
             print(f"\n========================== QUERY {user_choice} ==========================")
             print(query_prompt[query_index])
             query_results = g.query(query)

@@ -3,9 +3,11 @@
 
 from owlready2 import *
 
+# Load the ontology from file
 onto_path.append(".")
 onto = get_ontology("ontology.owl").load()
 
+# Get user input for type string
 def get_string_input(prompt):
     while True:
         user_input = input(prompt)
@@ -13,7 +15,8 @@ def get_string_input(prompt):
             return user_input
         else:
             print("[!] Input cannot be empty.")
-            
+
+# Get user input for type integer
 def get_digit_input(prompt):
     while True:
         user_input = input(prompt)
@@ -21,7 +24,8 @@ def get_digit_input(prompt):
             return int(user_input)
         else:
             print("[!] Input must be a number.")
-            
+
+# Get user input for type string recursively
 def get_recursive_input(prompt, property):
     while True:
         user_input = input(prompt)
@@ -29,7 +33,8 @@ def get_recursive_input(prompt, property):
             property.append(user_input)
         else:
             break
-        
+
+# Get user input for Unit entity recursively
 def get_recursive_unit(prompt, property, onto, allunits):
     while True:
         user_input = input(prompt)
@@ -41,6 +46,7 @@ def get_recursive_unit(prompt, property, onto, allunits):
         else:
             break
 
+# Add a unit entity to the ontology
 def add_unit(onto, unit_code):
     new_unit = onto.Unit(unit_code)
     new_unit.unitCode = unit_code
@@ -87,7 +93,8 @@ def add_unit(onto, unit_code):
             new_contact.hours = int(contact_info[1])
         else:
             break
-    
+
+# Add a major entity to the ontology
 def add_major(onto, major_code):
     new_major = onto.Major(major_code)
     new_major.majorCode = major_code
@@ -106,6 +113,7 @@ def add_major(onto, major_code):
     get_recursive_unit("Bridging Unit (leave blank to finish): ", new_major.bridging, onto, allunits)
     get_recursive_unit("Core Unit (leave blank to finish): ", new_major.containsUnit, onto, allunits)
 
+# Delete an entity from the ontology
 def delete_action(entity_code):
     if onto[entity_code] in allunits:
         for i in onto[entity_code].contact:
@@ -120,6 +128,7 @@ def delete_action(entity_code):
     else:
         print(f"Unit or major code {entity_code} not found in the ontology.")
 
+# Update an existing unit entity
 def update_unit(unit_code):
     while True:
         print("\nProperties:\n1. Unit title\n2. School \n3. Board of Examiners\n4. Level \n5. Delivery Mode\n6. Description\n7. Credit \n8. Outcomes\n9. Assessments\n10. Prerequisites\n11. Majors\n12. Contact\n0. Exit")
@@ -185,6 +194,7 @@ def update_unit(unit_code):
         else:
             print("Invalid property number.")
 
+# Update an existing major entity
 def update_major(major_code):
     while True:
         print("\nProperties:\n1. Title\n2. School \n3. Board of Examiners\n4. Delivery Mode \n5. Description\n6. Text\n7. Outcomes\n8. Courses\n9. bridging Units\n10. Contains Units\n0. Exit")
@@ -219,6 +229,7 @@ def update_major(major_code):
         else:
             print("Invalid property number.")
 
+# Update an existing unit or major entity
 def update_action(entity_code):
     if onto[entity_code] in allunits:
         update_unit(entity_code)
@@ -227,18 +238,21 @@ def update_action(entity_code):
     else:
         print(f"Unit or major code {entity_code} not found in the ontology.")
 
+# Check if the unit code is valid
 def is_valid_unit_code(unit_code):
     if len(unit_code) == 8 and unit_code[:4].isalpha() and unit_code[4:].isdigit():
         return True
     else:
         return False
-    
+
+# Check if the major code is valid
 def is_valid_major_code(major_code):
     if len(major_code) == 9 and major_code[3] == '-' and major_code[:3].isalpha() and major_code[4:].isalpha():
         return True
     else:
         return False
 
+# Main program with User Interface for CRUD operations
 with onto:
     while True:
         allunits = onto.Unit.instances()
